@@ -673,12 +673,26 @@ function showBloomOutput(message, type) {
 
 function updateAddedList() {
     const list = document.getElementById('addedList');
+    const countEl = document.getElementById('addedCount');
     if (!list) return;
     
+    if (countEl) countEl.textContent = bloomFilter.addedElements.length;
+    
     if (bloomFilter.addedElements.length === 0) {
-        list.textContent = 'Niciun element încă';
+        list.innerHTML = '<span class="empty-hint" style="font-size: 0.8rem; color: var(--text-muted); font-style: italic;">Niciun element încă</span>';
     } else {
-        list.textContent = bloomFilter.addedElements.join(', ');
+        list.innerHTML = bloomFilter.addedElements.map(el => 
+            `<span class="element-tag" style="
+                display: inline-block;
+                padding: 2px 8px;
+                background: var(--bg-tertiary);
+                border: 1px solid var(--accent-primary);
+                border-radius: 12px;
+                font-family: var(--font-mono);
+                font-size: 0.75rem;
+                color: var(--accent-primary);
+            ">${el}</span>`
+        ).join('');
     }
 }
 
@@ -961,15 +975,46 @@ function renderHLL() {
             correctionInfo.innerHTML = `📈 Corecție coliziuni hash activă`;
             correctionInfo.style.color = 'var(--accent-tertiary)';
         } else {
-            correctionInfo.innerHTML = '';
+            correctionInfo.innerHTML = `<span style="color: var(--text-muted);">Fără corecții (interval normal)</span>`;
         }
     }
     
-    // Sync checkboxes
+    // Sync checkboxes and show applicability
     const smallToggle = document.getElementById('smallCorrectionToggle');
     const largeToggle = document.getElementById('largeCorrectionToggle');
+    const smallLabel = document.getElementById('smallCorrectionLabel');
+    const largeLabel = document.getElementById('largeCorrectionLabel');
+    
     if (smallToggle) smallToggle.checked = hllState.smallRangeCorrection;
     if (largeToggle) largeToggle.checked = hllState.largeRangeCorrection;
+    
+    // Check if corrections would apply
+    const m = hllState.registers.length;
+    const rawE = hllState.rawEstimate || 0;
+    const twoTo32 = Math.pow(2, 32);
+    const V = hllState.registers.filter(r => r === 0).length;
+    
+    const smallApplicable = rawE <= 2.5 * m && V > 0;
+    const largeApplicable = rawE > twoTo32 / 30;
+    
+    if (smallLabel) {
+        if (smallApplicable) {
+            smallLabel.style.opacity = '1';
+            smallLabel.title = `Aplicabil: E=${rawE} ≤ ${Math.round(2.5*m)}, V=${V}`;
+        } else {
+            smallLabel.style.opacity = '0.5';
+            smallLabel.title = `Nu se aplică: E=${rawE} > ${Math.round(2.5*m)} sau V=0`;
+        }
+    }
+    if (largeLabel) {
+        if (largeApplicable) {
+            largeLabel.style.opacity = '1';
+            largeLabel.title = `Aplicabil: E > ${Math.round(twoTo32/30).toLocaleString()}`;
+        } else {
+            largeLabel.style.opacity = '0.5';
+            largeLabel.title = `Nu se aplică: E prea mic`;
+        }
+    }
     
     // Render insertion log
     const logEl = document.getElementById('hllInsertLog');

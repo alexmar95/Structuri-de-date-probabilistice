@@ -162,21 +162,6 @@ const SLIDES_CONFIG = [
         title: 'Demo Interactiv HyperLogLog'
     },
     {
-        file: 'hll-python.html',
-        classes: ['hll-section'],
-        title: 'Implementare Python HyperLogLog'
-    },
-    {
-        file: 'hll-math.html',
-        classes: ['hll-section'],
-        title: 'Formule și Trade-off-uri'
-    },
-    {
-        file: 'hll-tradeoff.html',
-        classes: ['hll-section'],
-        title: 'Precizie vs Memorie'
-    },
-    {
         file: 'hll-aplicatii.html',
         classes: ['hll-section'],
         title: 'Aplicații HyperLogLog'

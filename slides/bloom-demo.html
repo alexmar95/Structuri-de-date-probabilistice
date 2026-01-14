@@ -1,7 +1,7 @@
 <div class="slide-content">
     <div class="slide-header">
         <span class="slide-chapter">01 • Bloom Filters</span>
-        <h2>🎮 Demo Interactiv</h2>
+        <h2>🎮 Bloom Filter Demo</h2>
     </div>
     <div class="slide-body">
         <div class="interactive-demo" style="padding: var(--space-md);">
@@ -31,9 +31,13 @@
             </div>
             
             <!-- Added Elements List -->
-            <div class="added-elements" style="font-size: 0.85rem;">
-                <strong>Elemente adăugate:</strong>
-                <span id="addedList">Niciun element încă</span>
+            <div class="added-elements-container" style="margin-top: var(--space-sm);">
+                <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: var(--space-xs);">
+                    Elemente adăugate: <span id="addedCount">0</span>
+                </div>
+                <div id="addedList" class="added-tags" style="display: flex; flex-wrap: wrap; gap: 6px; max-height: 60px; overflow-y: auto;">
+                    <span class="empty-hint" style="font-size: 0.8rem; color: var(--text-muted); font-style: italic;">Niciun element încă</span>
+                </div>
             </div>
         </div>
     </div>

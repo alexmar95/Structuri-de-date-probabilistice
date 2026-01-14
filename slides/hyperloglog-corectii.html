@@ -4,41 +4,51 @@
         <h2>🔧 Corecții pentru cazuri extreme</h2>
     </div>
     <div class="slide-body">
-        <div class="corrections-intro">
-            <p>Formula de bază funcționează bine pentru cardinalități medii, dar are nevoie de corecții la extreme:</p>
+        <div class="corrections-intro" style="margin-bottom: var(--space-sm);">
+            <p style="margin: 0; font-size: 0.95rem;">Formula de bază funcționează bine pentru cardinalități medii, dar are nevoie de corecții la extreme:</p>
         </div>
-        <div class="correction-cases">
-            <div class="correction-case">
-                <div class="case-header small">
+        <div class="correction-cases" style="gap: var(--space-sm); margin-bottom: var(--space-sm);">
+            <div class="correction-case" style="padding: var(--space-sm) var(--space-md);">
+                <div class="case-header small" style="margin-bottom: var(--space-xs);">
                     <span class="case-icon">📉</span>
-                    <h4>Cardinalitate mică (E ≤ 2.5m)</h4>
+                    <h4 style="margin: 0; font-size: 1rem;">Cardinalitate mică (E ≤ 2.5m)</h4>
                 </div>
-                <div class="case-problem">
-                    <strong>Problema:</strong> Multe registre sunt încă 0
+                <div class="case-problem" style="font-size: 0.85rem; margin-bottom: var(--space-xs);">
+                    <strong>Problema:</strong> Multe registre sunt încă 0 → formula HLL subestimează
                 </div>
-                <div class="case-solution">
+                <div class="case-solution" style="font-size: 0.9rem;">
                     <strong>Corecție:</strong> Linear Counting
-                    <code>E* = m · ln(m / V)</code>
-                    <span class="case-note">unde V = numărul de registre cu valoarea 0</span>
+                    <code style="margin-left: var(--space-sm);">E* = m · ln(m / V)</code>
+                    <div class="formula-terms" style="font-size: 0.75rem; margin-top: var(--space-xs); color: var(--text-muted);">
+                        <strong>E*</strong> = estimare corectată |
+                        <strong>m</strong> = nr. registre |
+                        <strong>V</strong> = registre = 0 |
+                        <strong>ln</strong> = log natural
+                    </div>
                 </div>
             </div>
-            <div class="correction-case">
-                <div class="case-header large">
+            <div class="correction-case" style="padding: var(--space-sm) var(--space-md);">
+                <div class="case-header large" style="margin-bottom: var(--space-xs);">
                     <span class="case-icon">📈</span>
-                    <h4>Cardinalitate foarte mare (E > 2³²/30)</h4>
+                    <h4 style="margin: 0; font-size: 1rem;">Cardinalitate foarte mare (E > 2³²/30)</h4>
                 </div>
-                <div class="case-problem">
-                    <strong>Problema:</strong> Coliziuni de hash (32 biți)
+                <div class="case-problem" style="font-size: 0.85rem; margin-bottom: var(--space-xs);">
+                    <strong>Problema:</strong> Coliziuni de hash → formula HLL supraestimează
                 </div>
-                <div class="case-solution">
-                    <strong>Corecție:</strong> Ajustare pentru coliziuni
-                    <code>E* = -2³² · ln(1 - E/2³²)</code>
+                <div class="case-solution" style="font-size: 0.9rem;">
+                    <strong>Corecție:</strong> Ajustare coliziuni
+                    <code style="margin-left: var(--space-sm);">E* = -2³² · ln(1 - E/2³²)</code>
+                    <div class="formula-terms" style="font-size: 0.75rem; margin-top: var(--space-xs); color: var(--text-muted);">
+                        <strong>E*</strong> = estimare corectată |
+                        <strong>E</strong> = estimare brută |
+                        <strong>2³²</strong> = spațiu hash (~4.29B)
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="practical-note">
+        <div class="practical-note" style="padding: var(--space-sm) var(--space-md);">
             <span class="note-icon">💡</span>
-            <span>În practică, cu 64-bit hash-uri, corecția pentru cardinalități mari nu e necesară.</span>
+            <span>În practică, cu hash-uri pe 64 bits, corecția pentru cardinalități mari nu e necesară.</span>
         </div>
     </div>
 </div>
