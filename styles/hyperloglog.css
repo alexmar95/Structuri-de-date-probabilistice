@@ -158,28 +158,36 @@
 
 .registers-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
-    gap: var(--space-sm);
+    grid-template-columns: repeat(auto-fill, minmax(45px, 1fr));
+    gap: 4px;
 }
 
 .register {
-    padding: var(--space-sm);
+    padding: var(--space-xs);
     background: var(--bg-tertiary);
     border-radius: var(--radius-sm);
     text-align: center;
     font-family: var(--font-mono);
+    border: 1px solid transparent;
+    transition: all 0.3s ease;
+    cursor: help;
+}
+
+.register:hover {
+    transform: scale(1.1);
+    z-index: 10;
 }
 
 .register-index {
     display: block;
-    font-size: 0.65rem;
+    font-size: 0.55rem;
     color: var(--text-muted);
-    margin-bottom: 2px;
+    margin-bottom: 1px;
 }
 
 .register-value {
     display: block;
-    font-size: 1rem;
+    font-size: 0.85rem;
     font-weight: 600;
     color: var(--accent-primary);
 }

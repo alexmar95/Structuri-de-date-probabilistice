@@ -4,14 +4,28 @@
         <h2>🎮 Demo Interactiv</h2>
     </div>
     <div class="slide-body">
-        <div class="interactive-demo hll-demo">
-            <div class="demo-controls">
-                <button onclick="addRandomElements(10)" class="demo-btn primary">+10 Elemente</button>
-                <button onclick="addRandomElements(100)" class="demo-btn primary">+100 Elemente</button>
-                <button onclick="addRandomElements(1000)" class="demo-btn primary">+1000 Elemente</button>
+        <div class="interactive-demo hll-demo" style="padding: var(--space-md);">
+            <!-- Config Controls -->
+            <div class="hll-config" style="display: flex; gap: var(--space-lg); align-items: center; margin-bottom: var(--space-md); flex-wrap: wrap;">
+                <div class="config-group">
+                    <label style="font-size: 0.8rem; color: var(--text-muted);">
+                        p (registre = 2<sup>p</sup>): <strong id="pValueDisplay">4</strong>
+                    </label>
+                    <input type="range" id="hllPSlider" min="2" max="16" value="4" 
+                           style="width: 120px;" onchange="updateHLLConfig()">
+                    <span style="font-size: 0.75rem; color: var(--accent-tertiary);" id="registerCountDisplay">= 16 registre</span>
+                </div>
+                <div class="config-group">
+                    <label style="font-size: 0.8rem; color: var(--text-muted);">Elemente de adăugat:</label>
+                    <input type="number" id="hllElementCount" value="10" min="1" max="10000" 
+                           style="width: 80px;" class="demo-input">
+                </div>
+                <button onclick="addRandomElementsCustom()" class="demo-btn primary">+ Adaugă</button>
                 <button onclick="resetHLL()" class="demo-btn danger">Reset</button>
             </div>
-            <div class="hll-stats">
+
+            <!-- Basic Stats -->
+            <div class="hll-stats" style="margin-bottom: var(--space-sm);">
                 <div class="stat-box">
                     <span class="stat-label">Adăugate</span>
                     <span class="stat-value" id="hllTotalAdded">0</span>
@@ -20,17 +34,64 @@
                     <span class="stat-label">Unice (real)</span>
                     <span class="stat-value" id="hllActualUnique">0</span>
                 </div>
-                <div class="stat-box accent">
-                    <span class="stat-label">Estimare HLL</span>
-                    <span class="stat-value" id="hllEstimate">0</span>
-                </div>
                 <div class="stat-box">
-                    <span class="stat-label">Eroare</span>
-                    <span class="stat-value" id="hllError">0%</span>
+                    <span class="stat-label">Eroare std. teoretic</span>
+                    <span class="stat-value" id="hllTheoreticalError">~26%</span>
+                    <span style="font-size: 0.6rem; color: var(--text-muted); font-family: var(--font-mono);">
+                        1.04/√<span id="mValueFormula">16</span>
+                    </span>
                 </div>
             </div>
+
+            <!-- Algorithm Comparison -->
+            <div class="algo-comparison" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-sm); margin-bottom: var(--space-md);">
+                <!-- LogLog -->
+                <div class="algo-box" style="background: var(--bg-secondary); border-radius: var(--radius-sm); padding: var(--space-sm); border-left: 3px solid var(--text-muted);">
+                    <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: var(--space-xs);">LogLog</div>
+                    <div style="font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-muted); margin-bottom: var(--space-xs);">E = α·m·2<sup>R̄</sup> (media aritm.)</div>
+                    <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                        <span class="stat-value" id="loglogEstimate" style="font-size: 1.1rem;">0</span>
+                        <span id="loglogError" style="font-size: 0.75rem; color: var(--text-muted);">0%</span>
+                    </div>
+                </div>
+                <!-- SuperLogLog -->
+                <div class="algo-box" style="background: var(--bg-secondary); border-radius: var(--radius-sm); padding: var(--space-sm); border-left: 3px solid var(--accent-tertiary);">
+                    <div style="font-size: 0.75rem; color: var(--accent-tertiary); margin-bottom: var(--space-xs);">
+                        SuperLogLog 
+                        <span style="font-size: 0.65rem;">(elimină top <span id="sllPercentDisplay">30</span>%)</span>
+                    </div>
+                    <input type="range" id="sllPercentSlider" min="0" max="50" value="30" 
+                           style="width: 100%; height: 4px;" onchange="updateSLLPercent()">
+                    <div style="font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-muted); margin-bottom: var(--space-xs);">fără outliers</div>
+                    <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                        <span class="stat-value" id="superloglogEstimate" style="font-size: 1.1rem; color: var(--accent-tertiary);">0</span>
+                        <span id="superloglogError" style="font-size: 0.75rem; color: var(--text-muted);">0%</span>
+                    </div>
+                </div>
+                <!-- HyperLogLog -->
+                <div class="algo-box" style="background: var(--bg-secondary); border-radius: var(--radius-sm); padding: var(--space-sm); border-left: 3px solid var(--accent-primary);">
+                    <div style="font-size: 0.75rem; color: var(--accent-primary); margin-bottom: var(--space-xs);">HyperLogLog</div>
+                    <div style="font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-muted); margin-bottom: var(--space-xs);">E = α·m²/Σ2<sup>-R</sup> (media arm.)</div>
+                    <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                        <span class="stat-value" id="hllEstimate" style="font-size: 1.1rem; color: var(--accent-primary);">0</span>
+                        <span id="hllError" style="font-size: 0.75rem; color: var(--text-muted);">0%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent insertions log -->
+            <div class="hll-log" style="background: var(--bg-code); border-radius: var(--radius-sm); padding: var(--space-sm); margin-bottom: var(--space-md); max-height: 80px; overflow-y: auto;">
+                <div style="font-size: 0.7rem; color: var(--text-muted); margin-bottom: var(--space-xs);">Ultimele inserări:</div>
+                <div id="hllInsertLog" style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-secondary);">
+                    <em style="color: var(--text-muted);">Adaugă elemente pentru a vedea detaliile...</em>
+                </div>
+            </div>
+
+            <!-- Registers -->
             <div class="registers-container">
-                <h4>Registre HyperLogLog (16 registre)</h4>
+                <h4 style="font-size: 0.85rem; margin-bottom: var(--space-sm);">
+                    Registre (hover pentru detalii) - valoarea = max_zeros + 1
+                </h4>
                 <div class="registers-grid" id="hllRegisters"></div>
             </div>
         </div>

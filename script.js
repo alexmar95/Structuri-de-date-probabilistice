@@ -21,10 +21,12 @@ let bloomFilter = {
 };
 
 let hllState = {
-    p: 4,
+    p: 4,  // Configurable via slider
     registers: [],
     totalAdded: 0,
-    uniqueSet: new Set()
+    uniqueSet: new Set(),
+    insertLog: [],  // Track recent insertions
+    sllPercent: 30  // SuperLogLog: percentage of top registers to exclude
 };
 
 // ============================================
@@ -687,16 +689,52 @@ function initHLL() {
     hllState.registers = new Array(m).fill(0);
     hllState.totalAdded = 0;
     hllState.uniqueSet = new Set();
+    hllState.insertLog = [];
     renderHLL();
+    updateHLLConfigDisplay();
+}
+
+function updateHLLConfig() {
+    const slider = document.getElementById('hllPSlider');
+    if (slider) {
+        hllState.p = parseInt(slider.value);
+    }
+    initHLL();
+}
+
+function updateHLLConfigDisplay() {
+    const pDisplay = document.getElementById('pValueDisplay');
+    const regCountDisplay = document.getElementById('registerCountDisplay');
+    const theoreticalError = document.getElementById('hllTheoreticalError');
+    const mValueFormula = document.getElementById('mValueFormula');
+    
+    const m = Math.pow(2, hllState.p);
+    
+    if (pDisplay) pDisplay.textContent = hllState.p;
+    if (regCountDisplay) regCountDisplay.textContent = `= ${m.toLocaleString()} registre`;
+    if (theoreticalError) {
+        const stdError = (1.04 / Math.sqrt(m) * 100).toFixed(1);
+        theoreticalError.textContent = `~${stdError}%`;
+    }
+    if (mValueFormula) mValueFormula.textContent = m.toLocaleString();
 }
 
 function hllHash(item) {
-    let hash = 0;
+    // MurmurHash3-like mixing for better distribution
     const str = String(item);
+    let h1 = 0xdeadbeef;
+    let h2 = 0x41c6ce57;
+    
     for (let i = 0; i < str.length; i++) {
-        hash = ((hash << 5) - hash + str.charCodeAt(i)) | 0;
+        const ch = str.charCodeAt(i);
+        h1 = Math.imul(h1 ^ ch, 2654435761);
+        h2 = Math.imul(h2 ^ ch, 1597334677);
     }
-    return hash >>> 0;
+    
+    h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+    h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+    
+    return (h1 ^ h2) >>> 0;
 }
 
 function countLeadingZeros(value, bits) {
@@ -718,18 +756,68 @@ function hllAdd(item) {
     const remaining = hash & ((1 << (32 - p)) - 1);
     const leadingZeros = countLeadingZeros(remaining, 32 - p) + 1;
     
-    hllState.registers[index] = Math.max(hllState.registers[index], leadingZeros);
+    const oldValue = hllState.registers[index];
+    const updated = leadingZeros > oldValue;
+    hllState.registers[index] = Math.max(oldValue, leadingZeros);
+    
+    // Return insertion details
+    return {
+        item: item,
+        hash: hash,
+        index: index,
+        zeros: leadingZeros,
+        oldValue: oldValue,
+        newValue: hllState.registers[index],
+        updated: updated
+    };
 }
 
+function getAlpha(m) {
+    if (m === 16) return 0.673;
+    if (m === 32) return 0.697;
+    if (m === 64) return 0.709;
+    return 0.7213 / (1 + 1.079 / m);
+}
+
+// LogLog: uses arithmetic mean
+function loglogEstimate() {
+    const m = hllState.registers.length;
+    const alpha = getAlpha(m);
+    
+    // Arithmetic mean of registers
+    const sum = hllState.registers.reduce((a, b) => a + b, 0);
+    const avgR = sum / m;
+    
+    const E = alpha * m * Math.pow(2, avgR);
+    return Math.round(E);
+}
+
+// SuperLogLog: excludes top X% of registers (outliers)
+function superloglogEstimate() {
+    const m = hllState.registers.length;
+    const alpha = getAlpha(m);
+    const excludePercent = hllState.sllPercent / 100;
+    
+    // Sort registers and exclude top X%
+    const sorted = [...hllState.registers].sort((a, b) => a - b);
+    const keepCount = Math.floor(m * (1 - excludePercent));
+    const truncated = sorted.slice(0, Math.max(1, keepCount));
+    
+    // Arithmetic mean of truncated registers
+    const sum = truncated.reduce((a, b) => a + b, 0);
+    const avgR = sum / truncated.length;
+    
+    // Use original m for estimation (not truncated length)
+    const E = alpha * m * Math.pow(2, avgR);
+    return Math.round(E);
+}
+
+// HyperLogLog: uses harmonic mean
 function hllEstimate() {
     const m = hllState.registers.length;
+    const alpha = getAlpha(m);
     
-    let alpha;
-    if (m === 16) alpha = 0.673;
-    else if (m === 32) alpha = 0.697;
-    else if (m === 64) alpha = 0.709;
-    else alpha = 0.7213 / (1 + 1.079 / m);
-    
+    // Harmonic mean via sum of 2^(-R)
     let Z = 0;
     for (let i = 0; i < m; i++) {
         Z += Math.pow(2, -hllState.registers[i]);
@@ -737,6 +825,7 @@ function hllEstimate() {
     
     let E = alpha * m * m / Z;
     
+    // Small range correction
     if (E <= 2.5 * m) {
         const V = hllState.registers.filter(r => r === 0).length;
         if (V > 0) {
@@ -747,17 +836,40 @@ function hllEstimate() {
     return Math.round(E);
 }
 
+function updateSLLPercent() {
+    const slider = document.getElementById('sllPercentSlider');
+    const display = document.getElementById('sllPercentDisplay');
+    if (slider) {
+        hllState.sllPercent = parseInt(slider.value);
+        if (display) display.textContent = hllState.sllPercent;
+        renderHLL();
+    }
+}
+
 function addRandomElements(count) {
+    hllState.insertLog = []; // Clear log for batch
+    
     for (let i = 0; i < count; i++) {
         const id = Math.floor(Math.random() * (hllState.totalAdded + count * 2));
-        const element = `element_${id}`;
+        const element = `user_${id}`;
         
-        hllAdd(element);
+        const result = hllAdd(element);
         hllState.uniqueSet.add(element);
         hllState.totalAdded++;
+        
+        // Keep only last 10 insertions in log
+        if (hllState.insertLog.length < 10) {
+            hllState.insertLog.push(result);
+        }
     }
     
     renderHLL();
+}
+
+function addRandomElementsCustom() {
+    const countInput = document.getElementById('hllElementCount');
+    const count = countInput ? parseInt(countInput.value) || 10 : 10;
+    addRandomElements(Math.min(count, 10000));
 }
 
 function resetHLL() {
@@ -767,39 +879,100 @@ function resetHLL() {
 function renderHLL() {
     const totalEl = document.getElementById('hllTotalAdded');
     const uniqueEl = document.getElementById('hllActualUnique');
-    const estimateEl = document.getElementById('hllEstimate');
-    const errorEl = document.getElementById('hllError');
     
     if (totalEl) totalEl.textContent = hllState.totalAdded.toLocaleString();
     if (uniqueEl) uniqueEl.textContent = hllState.uniqueSet.size.toLocaleString();
     
-    const estimate = hllEstimate();
-    if (estimateEl) estimateEl.textContent = estimate.toLocaleString();
-    
     const actual = hllState.uniqueSet.size;
-    const error = actual === 0 ? 0 : Math.abs(estimate - actual) / actual * 100;
-    if (errorEl) errorEl.textContent = error.toFixed(2) + '%';
     
+    // Calculate all three estimates
+    const llEst = loglogEstimate();
+    const sllEst = superloglogEstimate();
+    const hllEst = hllEstimate();
+    
+    // Helper to calculate and display error
+    function displayEstimate(estEl, errEl, estimate) {
+        if (estEl) estEl.textContent = estimate.toLocaleString();
+        if (errEl) {
+            const error = actual === 0 ? 0 : Math.abs(estimate - actual) / actual * 100;
+            errEl.textContent = error.toFixed(1) + '%';
+            // Color code the error
+            if (error < 10) errEl.style.color = 'var(--accent-success)';
+            else if (error < 25) errEl.style.color = 'var(--accent-tertiary)';
+            else errEl.style.color = 'var(--accent-danger)';
+        }
+    }
+    
+    // LogLog
+    displayEstimate(
+        document.getElementById('loglogEstimate'),
+        document.getElementById('loglogError'),
+        llEst
+    );
+    
+    // SuperLogLog
+    displayEstimate(
+        document.getElementById('superloglogEstimate'),
+        document.getElementById('superloglogError'),
+        sllEst
+    );
+    
+    // HyperLogLog
+    displayEstimate(
+        document.getElementById('hllEstimate'),
+        document.getElementById('hllError'),
+        hllEst
+    );
+    
+    // Render insertion log
+    const logEl = document.getElementById('hllInsertLog');
+    if (logEl && hllState.insertLog.length > 0) {
+        logEl.innerHTML = hllState.insertLog.map(r => {
+            const updateIcon = r.updated ? '↑' : '=';
+            const updateColor = r.updated ? 'var(--accent-success)' : 'var(--text-muted)';
+            return `<span style="color: ${updateColor}">"${r.item}" → R[${r.index}] ${updateIcon} ${r.newValue} (zeros=${r.zeros})</span>`;
+        }).join('<br>');
+    } else if (logEl && hllState.totalAdded === 0) {
+        logEl.innerHTML = '<em style="color: var(--text-muted);">Adaugă elemente pentru a vedea detaliile...</em>';
+    }
+    
+    // Render registers
     const container = document.getElementById('hllRegisters');
     if (!container) return;
     
     container.innerHTML = '';
     
+    // Find recently updated registers for highlighting
+    const recentIndices = new Set(hllState.insertLog.filter(r => r.updated).map(r => r.index));
+    
     hllState.registers.forEach((value, index) => {
         const div = document.createElement('div');
         div.className = 'register';
+        
+        // Tooltip with details
+        const hashBits = hllState.p;
+        div.title = `Registru ${index}\nmax_zeros + 1 = ${value}\nEstimează ~2^${value} = ${Math.pow(2, value)} elemente în acest bucket`;
+        
         div.innerHTML = `
-            <span class="register-index">R[${index}]</span>
+            <span class="register-index">${index}</span>
             <span class="register-value">${value}</span>
         `;
         
         if (value > 0) {
             const intensity = Math.min(value / 10, 1);
-            div.style.background = `rgba(245, 158, 11, ${0.1 + intensity * 0.3})`;
+            div.style.background = `rgba(245, 158, 11, ${0.1 + intensity * 0.4})`;
+        }
+        
+        // Highlight recently updated
+        if (recentIndices.has(index)) {
+            div.style.boxShadow = '0 0 8px var(--accent-success)';
+            div.style.borderColor = 'var(--accent-success)';
         }
         
         container.appendChild(div);
     });
+    
+    updateHLLConfigDisplay();
 }
 
 // ============================================
@@ -939,6 +1112,9 @@ window.addToBloom = addToBloom;
 window.checkBloom = checkBloom;
 window.resetBloom = resetBloom;
 window.addRandomElements = addRandomElements;
+window.addRandomElementsCustom = addRandomElementsCustom;
+window.updateHLLConfig = updateHLLConfig;
+window.updateSLLPercent = updateSLLPercent;
 window.resetHLL = resetHLL;
 window.nextSlide = nextSlide;
 window.prevSlide = prevSlide;

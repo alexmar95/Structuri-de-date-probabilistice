@@ -4,12 +4,12 @@
         <h2>📊 LogLog: Mai multe registre</h2>
     </div>
     <div class="slide-body">
-        <div class="idea-box">
-            <h4>💡 Stochastic Averaging</h4>
-            <p>Împărțim elementele în <strong>m = 2<sup>p</sup></strong> grupuri (registre) și mediem rezultatele.</p>
+        <div class="idea-box" style="padding: var(--space-sm) var(--space-md); margin-bottom: var(--space-md);">
+            <h4 style="margin-bottom: var(--space-xs);">💡 Stochastic Averaging</h4>
+            <p style="margin: 0;">Împărțim elementele în <strong>m = 2<sup>p</sup></strong> grupuri (registre) și mediem rezultatele.</p>
         </div>
-        <div class="register-algorithm">
-            <div class="reg-step">
+        <div class="register-algorithm" style="gap: var(--space-sm); margin-bottom: var(--space-md);">
+            <div class="reg-step" style="padding: var(--space-xs) var(--space-md);">
                 <span class="reg-num">1</span>
                 <div class="reg-content">
                     <strong>Primii p biți</strong> ai hash-ului → indexul registrului
@@ -20,7 +20,7 @@
                     </div>
                 </div>
             </div>
-            <div class="reg-step">
+            <div class="reg-step" style="padding: var(--space-xs) var(--space-md);">
                 <span class="reg-num">2</span>
                 <div class="reg-content">
                     <strong>Restul biților</strong> → numărăm leading zeros
@@ -31,7 +31,7 @@
                     </div>
                 </div>
             </div>
-            <div class="reg-step">
+            <div class="reg-step" style="padding: var(--space-xs) var(--space-md);">
                 <span class="reg-num">3</span>
                 <div class="reg-content">
                     <strong>Actualizăm</strong> registrul cu maximul
@@ -41,14 +41,14 @@
                 </div>
             </div>
         </div>
-        <div class="formula-box">
-            <h4>Formula LogLog:</h4>
+        <div class="formula-box" style="padding: var(--space-sm) var(--space-md); margin-bottom: var(--space-sm);">
+            <h4 style="margin-bottom: var(--space-xs);">Formula LogLog:</h4>
             <div class="formula-content">
                 <span class="formula-main">E = α<sub>m</sub> · m · 2<sup>R̄</sup></span>
                 <span class="formula-desc">unde R̄ = media aritmetică a registrelor</span>
             </div>
         </div>
-        <div class="improvement-stat">
+        <div class="improvement-stat" style="padding: var(--space-sm) var(--space-md);">
             <span class="stat-label">Eroare standard cu m registre:</span>
             <span class="stat-value">σ ≈ 1.30 / √m</span>
             <span class="stat-example">m=64 → ~16% eroare, m=256 → ~8% eroare</span>

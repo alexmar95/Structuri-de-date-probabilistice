@@ -4,38 +4,38 @@
         <h2>📝 Algoritmul simplu (un singur registru)</h2>
     </div>
     <div class="slide-body">
-        <div class="algorithm-simple">
-            <div class="algo-step-box">
+        <div class="algorithm-simple" style="gap: var(--space-xs); margin-bottom: var(--space-md);">
+            <div class="algo-step-box" style="padding: var(--space-sm) var(--space-md);">
                 <span class="step-num">1</span>
                 <div class="step-content">
-                    <h4>Inițializare</h4>
+                    <h4 style="margin-bottom: var(--space-xs);">Inițializare</h4>
                     <code>max_zeros = 0</code>
                 </div>
             </div>
-            <div class="algo-arrow">↓</div>
-            <div class="algo-step-box">
+            <div class="algo-arrow" style="font-size: 1rem;">↓</div>
+            <div class="algo-step-box" style="padding: var(--space-sm) var(--space-md);">
                 <span class="step-num">2</span>
                 <div class="step-content">
-                    <h4>Pentru fiecare element</h4>
+                    <h4 style="margin-bottom: var(--space-xs);">Pentru fiecare element</h4>
                     <code>hash = hash_function(element)</code><br>
                     <code>zeros = count_leading_zeros(hash)</code><br>
                     <code>max_zeros = max(max_zeros, zeros)</code>
                 </div>
             </div>
-            <div class="algo-arrow">↓</div>
-            <div class="algo-step-box">
+            <div class="algo-arrow" style="font-size: 1rem;">↓</div>
+            <div class="algo-step-box" style="padding: var(--space-sm) var(--space-md);">
                 <span class="step-num">3</span>
                 <div class="step-content">
-                    <h4>Estimare</h4>
+                    <h4 style="margin-bottom: var(--space-xs);">Estimare</h4>
                     <code>cardinality ≈ 2<sup>max_zeros</sup></code>
                 </div>
             </div>
         </div>
-        <div class="memory-highlight">
+        <div class="memory-highlight" style="padding: var(--space-sm) var(--space-md); margin-bottom: var(--space-sm);">
             <span class="mem-icon">💾</span>
             <span class="mem-text">Memorie necesară: <strong>un singur număr</strong> (max_zeros)!</span>
         </div>
-        <div class="problem-teaser">
+        <div class="problem-teaser" style="padding: var(--space-sm) var(--space-md);">
             <span class="problem-icon">⚠️</span>
             <span>Dar... cât de precisă e această estimare?</span>
         </div>
