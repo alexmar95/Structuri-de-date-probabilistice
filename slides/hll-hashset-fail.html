@@ -1,0 +1,58 @@
+<div class="slide-content">
+    <div class="slide-header">
+        <span class="slide-chapter">02 • Soluția naivă</span>
+        <h2>HashSet pentru utilizatori unici?</h2>
+    </div>
+    <div class="slide-body">
+        <div class="solution-attempt">
+            <div class="attempt-header">
+                <span class="attempt-icon">💡</span>
+                <h4>Prima idee: Stocăm fiecare ID în HashSet</h4>
+            </div>
+            <div class="attempt-code">
+                <code>unique_users = HashSet()</code><br>
+                <code>for visit in stream:</code><br>
+                <code>    unique_users.add(visit.user_id)</code><br>
+                <code>count = len(unique_users)</code>
+            </div>
+        </div>
+        <div class="memory-scaling">
+            <h4>Problema: memoria crește cu fiecare utilizator unic</h4>
+            <div class="scaling-bars">
+                <div class="scale-row">
+                    <span class="scale-n">1K utilizatori</span>
+                    <div class="scale-bar-container">
+                        <div class="scale-bar" style="width: 1%;"></div>
+                    </div>
+                    <span class="scale-mem good">~40 KB</span>
+                </div>
+                <div class="scale-row">
+                    <span class="scale-n">1M utilizatori</span>
+                    <div class="scale-bar-container">
+                        <div class="scale-bar" style="width: 5%;"></div>
+                    </div>
+                    <span class="scale-mem neutral">~40 MB</span>
+                </div>
+                <div class="scale-row">
+                    <span class="scale-n">100M utilizatori</span>
+                    <div class="scale-bar-container">
+                        <div class="scale-bar" style="width: 30%;"></div>
+                    </div>
+                    <span class="scale-mem bad">~4 GB</span>
+                </div>
+                <div class="scale-row highlight">
+                    <span class="scale-n"><strong>1B utilizatori</strong></span>
+                    <div class="scale-bar-container">
+                        <div class="scale-bar bad" style="width: 80%;"></div>
+                    </div>
+                    <span class="scale-mem bad"><strong>~40 GB</strong></span>
+                </div>
+            </div>
+        </div>
+        <div class="memory-insight orange">
+            <span class="insight-icon">❌</span>
+            <span>40 GB RAM doar pentru a număra! Și asta pentru <strong>un singur contor</strong>. Ce facem dacă vrem per pagină, per țară, per oră...?</span>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,58 @@
+<div class="slide-content">
+    <div class="slide-header">
+        <span class="slide-chapter">02 • Bloom Filter + Contor</span>
+        <h2>🔵 Încercăm: Bloom Filter + Contor</h2>
+    </div>
+    <div class="slide-body">
+        <div class="idea-box">
+            <h4>💡 Ideea:</h4>
+            <p>Folosim Bloom ca să detectăm duplicatele și numărăm doar elementele noi.</p>
+        </div>
+        <div class="proposed-solution">
+            <div class="code-snippet">
+                <code>counter = 0</code><br>
+                <code>bloom = BloomFilter()</code><br>
+                <code></code><br>
+                <code>for user in stream:</code><br>
+                <code>    if not bloom.contains(user):  <span class="code-comment"># "Sigur nu l-am văzut"</span></code><br>
+                <code>        counter += 1</code><br>
+                <code>        bloom.add(user)</code><br>
+                <code>    <span class="code-comment"># altfel: "Probabil l-am văzut" → skip</span></code>
+            </div>
+        </div>
+        <div class="problem-explanation">
+            <h4>⚠️ Problema: False Positives ne sabotează</h4>
+            <div class="fp-diagram">
+                <div class="fp-case good">
+                    <span class="fp-label">Bloom: "Sigur NU"</span>
+                    <span class="fp-arrow">→</span>
+                    <span class="fp-result">Corect! Incrementăm ✓</span>
+                </div>
+                <div class="fp-case bad">
+                    <span class="fp-label">Bloom: "Probabil DA"</span>
+                    <span class="fp-arrow">→</span>
+                    <span class="fp-result">Poate fi fals pozitiv → NU incrementăm, dar ar fi trebuit! ✗</span>
+                </div>
+            </div>
+        </div>
+        <div class="consequence-box">
+            <div class="consequence-stat">
+                <span class="stat-label">Cu 1% false positive rate și 1M utilizatori:</span>
+                <span class="stat-value bad">~10,000 utilizatori pierduți din numărătoare</span>
+            </div>
+            <div class="consequence-comparison">
+                <div class="cons-item bad">
+                    <strong>Bloom + counter:</strong> Mereu <em>subcontează</em> (eroare într-o singură direcție)
+                </div>
+                <div class="cons-item good">
+                    <strong>Ce ne-ar trebui:</strong> Eroare <em>simetrică ±%</em>, controlabilă matematic
+                </div>
+            </div>
+        </div>
+        <div class="conclusion-box orange">
+            <span class="conclusion-icon">❌</span>
+            <span>Bloom Filter nu e potrivit pentru numărare. Avem nevoie de altceva!</span>
+        </div>
+    </div>
+</div>
+

@@ -3407,3 +3407,328 @@ td.neutral {
     opacity: 0.9;
 }
 
+/* ============================================
+   Bloom vs HLL Comparison Slides
+   ============================================ */
+
+.consideration-box {
+    background: var(--bg-card);
+    border: 1px solid var(--bg-tertiary);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-xl);
+    text-align: center;
+}
+
+.consideration-box .lead {
+    font-size: 1.15rem;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.comparison-boxes {
+    display: flex;
+    align-items: stretch;
+    gap: var(--space-lg);
+    margin-bottom: var(--space-xl);
+    justify-content: center;
+}
+
+.compare-box {
+    flex: 1;
+    max-width: 320px;
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    padding: var(--space-xl);
+    text-align: center;
+}
+
+.compare-box.bloom-box {
+    border: 2px solid var(--accent-primary);
+}
+
+.compare-box.hll-box {
+    border: 2px solid var(--accent-tertiary);
+}
+
+.compare-box h4 {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-md);
+    font-family: var(--font-mono);
+}
+
+.compare-question {
+    margin-bottom: var(--space-md);
+}
+
+.big-quote {
+    display: block;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--space-sm);
+}
+
+.answer-type {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    color: var(--accent-primary);
+}
+
+.hll-box .answer-type {
+    color: var(--accent-tertiary);
+}
+
+.compare-vs {
+    display: flex;
+    align-items: center;
+    font-size: 2rem;
+    color: var(--text-muted);
+    font-weight: bold;
+}
+
+.compare-note {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin: 0;
+}
+
+.next-idea {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-md);
+    padding: var(--space-lg);
+    background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(245, 158, 11, 0.1));
+    border-radius: var(--radius-lg);
+    font-size: 1.1rem;
+    color: var(--text-primary);
+}
+
+.next-icon {
+    font-size: 1.5rem;
+}
+
+.idea-box {
+    background: rgba(6, 182, 212, 0.1);
+    border: 1px solid var(--accent-primary);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-xl);
+}
+
+.idea-box h4 {
+    color: var(--accent-primary);
+    margin-bottom: var(--space-sm);
+}
+
+.idea-box p {
+    margin: 0;
+    color: var(--text-primary);
+}
+
+.proposed-solution {
+    margin-bottom: var(--space-xl);
+}
+
+.code-snippet {
+    background: var(--bg-code);
+    border: 1px solid var(--bg-tertiary);
+    border-radius: var(--radius-md);
+    padding: var(--space-lg);
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    line-height: 1.8;
+    color: var(--text-primary);
+}
+
+.code-snippet code {
+    display: block;
+}
+
+.code-comment {
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+.problem-explanation {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid var(--accent-danger);
+    border-radius: var(--radius-lg);
+    padding: var(--space-xl);
+    margin-bottom: var(--space-xl);
+}
+
+.problem-explanation h4 {
+    color: var(--accent-danger);
+    margin-bottom: var(--space-lg);
+    font-size: 1.1rem;
+}
+
+.fp-diagram {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    margin-bottom: var(--space-lg);
+}
+
+.fp-case {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-md);
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+}
+
+.fp-case.good {
+    border-left: 4px solid var(--accent-success);
+}
+
+.fp-case.bad {
+    border-left: 4px solid var(--accent-danger);
+}
+
+.fp-label {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    min-width: 140px;
+}
+
+.fp-arrow {
+    color: var(--text-muted);
+    font-weight: bold;
+}
+
+.fp-result {
+    font-size: 0.9rem;
+    color: var(--text-primary);
+}
+
+.fp-consequence {
+    color: var(--text-primary);
+    line-height: 1.6;
+}
+
+.key-difference-box {
+    background: var(--bg-card);
+    border: 1px solid var(--bg-tertiary);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+}
+
+.diff-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-sm) 0;
+}
+
+.diff-row:not(:last-child) {
+    border-bottom: 1px solid var(--bg-tertiary);
+    padding-bottom: var(--space-md);
+    margin-bottom: var(--space-sm);
+}
+
+.diff-label {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    min-width: 150px;
+}
+
+.diff-value {
+    font-size: 0.95rem;
+}
+
+.diff-value.good {
+    color: var(--accent-success);
+}
+
+.diff-value.bad {
+    color: var(--accent-danger);
+}
+
+/* Consequence Box */
+.consequence-box {
+    background: var(--bg-card);
+    border: 1px solid var(--bg-tertiary);
+    border-radius: var(--radius-lg);
+    padding: var(--space-xl);
+    margin-bottom: var(--space-xl);
+}
+
+.consequence-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-lg);
+    padding-bottom: var(--space-lg);
+    border-bottom: 1px solid var(--bg-tertiary);
+}
+
+.consequence-stat .stat-label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.consequence-stat .stat-value {
+    font-size: 1.2rem;
+    font-weight: 600;
+    font-family: var(--font-mono);
+}
+
+.consequence-stat .stat-value.bad {
+    color: var(--accent-danger);
+}
+
+.consequence-comparison {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.cons-item {
+    padding: var(--space-md);
+    border-radius: var(--radius-md);
+    font-size: 0.95rem;
+}
+
+.cons-item.bad {
+    background: rgba(239, 68, 68, 0.1);
+    border-left: 3px solid var(--accent-danger);
+    color: var(--text-primary);
+}
+
+.cons-item.good {
+    background: rgba(16, 185, 129, 0.1);
+    border-left: 3px solid var(--accent-success);
+    color: var(--text-primary);
+}
+
+/* Conclusion Box */
+.conclusion-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-md);
+    padding: var(--space-lg);
+    border-radius: var(--radius-lg);
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.conclusion-box.orange {
+    background: rgba(245, 158, 11, 0.15);
+    border: 1px solid var(--accent-tertiary);
+    color: var(--accent-tertiary);
+}
+
+.conclusion-icon {
+    font-size: 1.5rem;
+}
+
