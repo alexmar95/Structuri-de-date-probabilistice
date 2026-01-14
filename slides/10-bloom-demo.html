@@ -1,0 +1,28 @@
+<div class="slide-content">
+    <div class="slide-header">
+        <span class="slide-chapter">01 • Bloom Filters</span>
+        <h2>🎮 Demo Interactiv</h2>
+    </div>
+    <div class="slide-body">
+        <div class="interactive-demo">
+            <div class="demo-controls">
+                <input type="text" id="bloomInput" placeholder="Introdu un cuvânt..." class="demo-input">
+                <button onclick="addToBloom()" class="demo-btn primary">Adaugă</button>
+                <button onclick="checkBloom()" class="demo-btn secondary">Verifică</button>
+                <button onclick="resetBloom()" class="demo-btn danger">Reset</button>
+            </div>
+            <div class="bloom-visualization">
+                <div class="bit-array" id="bloomBitArray"></div>
+                <div class="hash-indicators" id="hashIndicators"></div>
+            </div>
+            <div class="demo-output" id="bloomOutput">
+                <p>Adaugă cuvinte pentru a vedea cum funcționează Bloom Filter-ul.</p>
+            </div>
+            <div class="added-elements">
+                <strong>Elemente adăugate:</strong>
+                <span id="addedList">Niciun element încă</span>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,84 @@
+<div class="slide-content">
+    <div class="slide-header">
+        <span class="slide-chapter">00 • Problema</span>
+        <h2>📊 Cât RAM consumă un HashSet?</h2>
+    </div>
+    <div class="slide-body">
+        <div class="memory-explanation">
+            <div class="memory-formula-box">
+                <h4>Pentru fiecare element stocăm:</h4>
+                <div class="memory-components">
+                    <div class="mem-component">
+                        <span class="mem-icon">📝</span>
+                        <span class="mem-name">Datele</span>
+                        <span class="mem-size">~50 bytes</span>
+                        <span class="mem-desc">(URL-ul în sine)</span>
+                    </div>
+                    <span class="mem-plus">+</span>
+                    <div class="mem-component">
+                        <span class="mem-icon">📦</span>
+                        <span class="mem-name">Overhead obiect</span>
+                        <span class="mem-size">~40 bytes</span>
+                        <span class="mem-desc">(metadata Java/Python)</span>
+                    </div>
+                    <span class="mem-plus">+</span>
+                    <div class="mem-component">
+                        <span class="mem-icon">🔗</span>
+                        <span class="mem-name">Pointer în tabel</span>
+                        <span class="mem-size">~8 bytes</span>
+                        <span class="mem-desc">(referință hash table)</span>
+                    </div>
+                </div>
+                <div class="memory-total">
+                    <span class="total-label">Total per element:</span>
+                    <span class="total-value">~100 bytes</span>
+                </div>
+            </div>
+        </div>
+        <div class="memory-scaling">
+            <h4>Memoria crește <em>liniar</em> cu numărul de elemente:</h4>
+            <div class="scaling-bars">
+                <div class="scale-row">
+                    <span class="scale-n">1K URL-uri</span>
+                    <div class="scale-bar-container">
+                        <div class="scale-bar" style="width: 1%;"></div>
+                    </div>
+                    <span class="scale-mem good">~100 KB</span>
+                </div>
+                <div class="scale-row">
+                    <span class="scale-n">100K URL-uri</span>
+                    <div class="scale-bar-container">
+                        <div class="scale-bar" style="width: 10%;"></div>
+                    </div>
+                    <span class="scale-mem neutral">~10 MB</span>
+                </div>
+                <div class="scale-row">
+                    <span class="scale-n">1M URL-uri</span>
+                    <div class="scale-bar-container">
+                        <div class="scale-bar" style="width: 20%;"></div>
+                    </div>
+                    <span class="scale-mem neutral">~100 MB</span>
+                </div>
+                <div class="scale-row highlight">
+                    <span class="scale-n"><strong>10M URL-uri</strong></span>
+                    <div class="scale-bar-container">
+                        <div class="scale-bar bad" style="width: 60%;"></div>
+                    </div>
+                    <span class="scale-mem bad"><strong>~1 GB</strong></span>
+                </div>
+                <div class="scale-row">
+                    <span class="scale-n">100M URL-uri</span>
+                    <div class="scale-bar-container">
+                        <div class="scale-bar bad" style="width: 100%;"></div>
+                    </div>
+                    <span class="scale-mem bad">~10 GB</span>
+                </div>
+            </div>
+        </div>
+        <div class="memory-insight">
+            <span class="insight-icon">💡</span>
+            <span>Problema: memoria HashSet crește <strong>O(n)</strong> — proporțional cu datele!</span>
+        </div>
+    </div>
+</div>
+

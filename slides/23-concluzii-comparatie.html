@@ -1,0 +1,45 @@
+<div class="slide-content">
+    <div class="slide-header">
+        <span class="slide-chapter">03 • Concluzii</span>
+        <h2>Tabel Comparativ Final</h2>
+    </div>
+    <div class="slide-body centered">
+        <table class="comparison-table final">
+            <thead>
+                <tr>
+                    <th>Aspect</th>
+                    <th class="bloom-col">Bloom Filter</th>
+                    <th class="hll-col">HyperLogLog</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Scop</td>
+                    <td>Test de apartenență</td>
+                    <td>Estimare cardinalitate</td>
+                </tr>
+                <tr>
+                    <td>Operație</td>
+                    <td><code>contains(x)</code></td>
+                    <td><code>count_distinct()</code></td>
+                </tr>
+                <tr>
+                    <td>Tip eroare</td>
+                    <td>False positives</td>
+                    <td>Eroare ±%</td>
+                </tr>
+                <tr>
+                    <td>Memorie tipică</td>
+                    <td>~10 biți/element</td>
+                    <td>~12KB total</td>
+                </tr>
+                <tr>
+                    <td>Complexitate</td>
+                    <td>O(k)</td>
+                    <td>O(1)</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+

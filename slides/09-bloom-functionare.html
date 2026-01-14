@@ -1,0 +1,46 @@
+<div class="slide-content">
+    <div class="slide-header">
+        <span class="slide-chapter">01 • Bloom Filters</span>
+        <h2>Cum funcționează?</h2>
+    </div>
+    <div class="slide-body">
+        <div class="steps-horizontal">
+            <div class="step-card">
+                <div class="step-number">1</div>
+                <h4>Structura</h4>
+                <p>Un vector de <code>m</code> biți, inițial toți pe 0, și <code>k</code> funcții hash independente</p>
+            </div>
+            <div class="step-arrow">→</div>
+            <div class="step-card">
+                <div class="step-number">2</div>
+                <h4>Inserare</h4>
+                <p>Se calculează <code>k</code> hash-uri și se setează biții corespunzători pe 1</p>
+            </div>
+            <div class="step-arrow">→</div>
+            <div class="step-card">
+                <div class="step-number">3</div>
+                <h4>Căutare</h4>
+                <p>Se verifică dacă toți <code>k</code> biți sunt 1. Dacă unul e 0, elementul sigur nu există</p>
+            </div>
+        </div>
+        <div class="visual-example">
+            <div class="example-header">Exemplu vizual cu k=3 hash-uri:</div>
+            <div class="bit-array-example">
+                <span class="bit-ex">0</span>
+                <span class="bit-ex active">1</span>
+                <span class="bit-ex">0</span>
+                <span class="bit-ex active">1</span>
+                <span class="bit-ex">0</span>
+                <span class="bit-ex">0</span>
+                <span class="bit-ex active">1</span>
+                <span class="bit-ex">0</span>
+            </div>
+            <div class="hash-arrows">
+                <span style="left: 15%">h₁</span>
+                <span style="left: 40%">h₂</span>
+                <span style="left: 78%">h₃</span>
+            </div>
+        </div>
+    </div>
+</div>
+

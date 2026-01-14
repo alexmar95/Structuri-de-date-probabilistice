@@ -1,0 +1,31 @@
+<div class="slide-content">
+    <div class="slide-header">
+        <span class="slide-chapter">02 • HyperLogLog</span>
+        <h2>📐 Formule și Trade-off-uri</h2>
+    </div>
+    <div class="slide-body">
+        <div class="formula-grid">
+            <div class="formula-card orange">
+                <h4>Formula de Estimare</h4>
+                <div class="formula">
+                    <div class="math-formula">E = α<sub>m</sub> × m² × (Σ 2<sup>-M[j]</sup>)<sup>-1</sup></div>
+                </div>
+            </div>
+            <div class="formula-card orange">
+                <h4>Eroarea Standard</h4>
+                <div class="formula">
+                    <div class="math-formula">σ ≈ 1.04 / √m</div>
+                </div>
+                <p class="formula-desc">Cu 1024 registre → ~3.25% eroare</p>
+            </div>
+            <div class="formula-card orange">
+                <h4>Memorie Necesară</h4>
+                <div class="formula">
+                    <div class="math-formula">Memorie = 2<sup>p</sup> × 6 biți</div>
+                </div>
+                <p class="formula-desc">p=14 → doar 12KB pentru miliarde!</p>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,43 @@
+<div class="slide-content">
+    <div class="slide-header">
+        <span class="slide-chapter">00 • Introducere</span>
+        <h2>Comparație: Deterministic vs Probabilistic</h2>
+    </div>
+    <div class="slide-body centered">
+        <table class="comparison-table">
+            <thead>
+                <tr>
+                    <th>Caracteristică</th>
+                    <th>HashSet (Deterministic)</th>
+                    <th>Bloom Filter (Probabilistic)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Memorie pentru 1M elemente</td>
+                    <td class="bad">~40 MB</td>
+                    <td class="good">~1.2 MB</td>
+                </tr>
+                <tr>
+                    <td>False Positives</td>
+                    <td class="good">0%</td>
+                    <td class="neutral">~1% (configurabil)</td>
+                </tr>
+                <tr>
+                    <td>False Negatives</td>
+                    <td class="good">0%</td>
+                    <td class="good">0%</td>
+                </tr>
+                <tr>
+                    <td>Ștergere element</td>
+                    <td class="good">Da</td>
+                    <td class="bad">Nu (standard)</td>
+                </tr>
+            </tbody>
+        </table>
+        <p class="table-note">
+            💡 Sacrificăm precizia perfectă în schimbul unor avantaje semnificative în memorie și viteză
+        </p>
+    </div>
+</div>
+

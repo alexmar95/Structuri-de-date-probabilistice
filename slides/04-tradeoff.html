@@ -1,0 +1,44 @@
+<div class="slide-content">
+    <div class="slide-header">
+        <span class="slide-chapter">00 • Trade-off</span>
+        <h2>Ce am sacrifica pentru eficiență?</h2>
+    </div>
+    <div class="slide-body">
+        <div class="tradeoff-visual">
+            <div class="tradeoff-side left">
+                <div class="tradeoff-title">Structuri Deterministe</div>
+                <div class="tradeoff-bar deterministic"></div>
+                <ul class="tradeoff-list">
+                    <li>✓ Răspuns 100% corect</li>
+                    <li>✓ Putem enumera elementele</li>
+                    <li>✓ Putem șterge</li>
+                    <li class="negative">✗ Memorie proporțională cu n</li>
+                    <li class="negative">✗ Nu scalează la miliarde</li>
+                </ul>
+            </div>
+            <div class="tradeoff-center">
+                <div class="balance-icon">⚖️</div>
+                <div class="balance-text">Trade-off</div>
+            </div>
+            <div class="tradeoff-side right">
+                <div class="tradeoff-title">Structuri Probabilistice</div>
+                <div class="tradeoff-bar probabilistic"></div>
+                <ul class="tradeoff-list">
+                    <li>✓ Memorie constantă sau sub-liniară</li>
+                    <li>✓ Extrem de rapidă</li>
+                    <li>✓ Scalează la orice dimensiune</li>
+                    <li class="negative">✗ Poate avea erori mici</li>
+                    <li class="negative">✗ Nu stochează datele reale</li>
+                </ul>
+            </div>
+        </div>
+        <div class="tradeoff-conclusion">
+            <p>
+                <strong>Ideea cheie:</strong> În multe aplicații reale, un răspuns 
+                <em>"99% sigur"</em> în <strong>1 KB</strong> e mai util decât un răspuns 
+                <em>"100% sigur"</em> în <strong>1 GB</strong>.
+            </p>
+        </div>
+    </div>
+</div>
+

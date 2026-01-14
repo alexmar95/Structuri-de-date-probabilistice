@@ -1,0 +1,38 @@
+<div class="slide-content">
+    <div class="slide-header">
+        <span class="slide-chapter">02 • HyperLogLog</span>
+        <h2>🎲 Intuiția: Experimentul cu moneda</h2>
+    </div>
+    <div class="slide-body">
+        <div class="intuition-box">
+            <p class="lead">Imaginează-ți că arunci o monedă și numeri câte "cap" consecutive obții:</p>
+            <div class="probability-list">
+                <div class="prob-item">
+                    <span class="prob-count">1</span>
+                    <span class="prob-bar" style="width: 50%"></span>
+                    <span class="prob-text">cap consecutiv → 50%</span>
+                </div>
+                <div class="prob-item">
+                    <span class="prob-count">2</span>
+                    <span class="prob-bar" style="width: 25%"></span>
+                    <span class="prob-text">capuri consecutive → 25%</span>
+                </div>
+                <div class="prob-item">
+                    <span class="prob-count">5</span>
+                    <span class="prob-bar" style="width: 8%"></span>
+                    <span class="prob-text">capuri consecutive → 3%</span>
+                </div>
+                <div class="prob-item">
+                    <span class="prob-count">10</span>
+                    <span class="prob-bar" style="width: 3%"></span>
+                    <span class="prob-text">capuri consecutive → 0.1%</span>
+                </div>
+            </div>
+            <div class="key-insight">
+                <strong>Ideea cheie:</strong> Dacă am observat <code>k</code> zerouri consecutive la 
+                începutul unui hash, probabil am văzut aproximativ <strong>2<sup>k</sup></strong> elemente distincte!
+            </div>
+        </div>
+    </div>
+</div>
+

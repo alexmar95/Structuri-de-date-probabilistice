@@ -11,6 +11,7 @@ let totalSlides = 0;
 let slides = [];
 let currentTheme = 'dark';
 let hideNavTimeout = null;
+let slidesLoaded = false;
 
 let bloomFilter = {
     size: 32,
@@ -25,6 +26,76 @@ let hllState = {
     totalAdded: 0,
     uniqueSet: new Set()
 };
+
+// ============================================
+// Slides Loader (from HTML fragments)
+// ============================================
+
+async function loadSlides() {
+    const container = document.getElementById('slidesContainer');
+    const loadingEl = document.getElementById('slidesLoading');
+    
+    if (!container || typeof SLIDES_CONFIG === 'undefined') {
+        console.error('Slides container or config not found');
+        return false;
+    }
+    
+    try {
+        // Load all slides in parallel
+        const slidePromises = SLIDES_CONFIG.map(async (config, index) => {
+            const response = await fetch(`slides/${config.file}`);
+            if (!response.ok) {
+                throw new Error(`Failed to load ${config.file}: ${response.status}`);
+            }
+            const html = await response.text();
+            return { config, html, index };
+        });
+        
+        const loadedSlides = await Promise.all(slidePromises);
+        
+        // Sort by index to maintain order
+        loadedSlides.sort((a, b) => a.index - b.index);
+        
+        // Clear loading indicator
+        if (loadingEl) {
+            loadingEl.remove();
+        }
+        
+        // Create slide elements
+        loadedSlides.forEach(({ config, html, index }) => {
+            const section = document.createElement('section');
+            section.className = 'slide';
+            
+            // Add extra classes
+            config.classes.forEach(cls => section.classList.add(cls));
+            
+            // Set data attribute
+            section.setAttribute('data-slide', index);
+            section.setAttribute('data-title', config.title);
+            
+            // Set inner HTML
+            section.innerHTML = html;
+            
+            container.appendChild(section);
+        });
+        
+        slidesLoaded = true;
+        return true;
+        
+    } catch (error) {
+        console.error('Error loading slides:', error);
+        if (loadingEl) {
+            loadingEl.innerHTML = `
+                <div class="loading-error">
+                    <p>❌ Eroare la încărcarea slide-urilor</p>
+                    <p class="error-details">${error.message}</p>
+                    <button onclick="location.reload()">Reîncearcă</button>
+                </div>
+            `;
+        }
+        return false;
+    }
+}
 
 // ============================================
 // Slide Navigation
@@ -88,6 +159,12 @@ function createSlideDots() {
 }
 
 function getSlideTitle(slide, index) {
+    // First try data-title attribute (from config)
+    const dataTitle = slide.getAttribute('data-title');
+    if (dataTitle) {
+        return dataTitle;
+    }
+    
     // Try to get title from h1 or h2
     const h1 = slide.querySelector('h1');
     const h2 = slide.querySelector('h2');
@@ -638,17 +715,23 @@ function renderHLL() {
     });
 }
 
-// Syntax highlighting removed - was causing display issues
-
 // ============================================
 // Initialize
 // ============================================
 
-document.addEventListener('DOMContentLoaded', () => {
+async function initializePresentation() {
     // Initialize theme first
     initTheme();
     
-    // Initialize slides
+    // Load slides from HTML fragments
+    const loaded = await loadSlides();
+    
+    if (!loaded) {
+        console.error('Failed to load slides');
+        return;
+    }
+    
+    // Initialize slides navigation
     initSlides();
     
     // Initialize auto-hide navigation
@@ -667,7 +750,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     console.log('Presentation Mode Loaded - Use arrow keys or buttons to navigate');
-});
+}
+
+document.addEventListener('DOMContentLoaded', initializePresentation);
 
 // Make functions globally available
 window.runPythonCode = runPythonCode;

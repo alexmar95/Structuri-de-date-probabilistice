@@ -1,0 +1,47 @@
+<div class="slide-content">
+    <div class="slide-header">
+        <span class="slide-chapter">00 • Soluția clasică</span>
+        <h2>Ideea: Folosim un HashSet!</h2>
+    </div>
+    <div class="slide-body">
+        <p class="lead">
+            Structurile pe care le-am învățat ne oferă operații în <strong>O(1)</strong>...
+        </p>
+        <div class="recap-grid">
+            <div class="recap-card highlighted">
+                <div class="recap-icon">📦</div>
+                <h4>HashSet</h4>
+                <div class="recap-ops">
+                    <span class="op-badge">add(url) → O(1)</span>
+                    <span class="op-badge accent">contains(url) → O(1)</span>
+                    <span class="op-badge">remove(url) → O(1)</span>
+                </div>
+                <p>Perfect pentru verificarea apartenenței!</p>
+                <div class="recap-code">
+                    <code>blacklist.contains(url) → true/false</code>
+                </div>
+            </div>
+            <div class="solution-flow">
+                <div class="flow-step">
+                    <span class="flow-num">1</span>
+                    <span>Încărcăm toate URL-urile în HashSet</span>
+                </div>
+                <div class="flow-arrow">↓</div>
+                <div class="flow-step">
+                    <span class="flow-num">2</span>
+                    <span>La fiecare vizită: <code>contains(url)</code></span>
+                </div>
+                <div class="flow-arrow">↓</div>
+                <div class="flow-step success">
+                    <span class="flow-num">✓</span>
+                    <span>Răspuns instant în O(1)!</span>
+                </div>
+            </div>
+        </div>
+        <div class="recap-insight warning">
+            <span class="insight-icon">⚠️</span>
+            <span>Dar... <strong>cât RAM consumă</strong> un HashSet cu 10 milioane de URL-uri?</span>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,53 @@
+<div class="slide-content">
+    <div class="slide-header">
+        <span class="slide-chapter">01 • Bloom Filters</span>
+        <h2>📝 Implementare Python</h2>
+    </div>
+    <div class="slide-body code-slide">
+        <div class="code-block">
+            <div class="code-header">
+                <span class="code-lang">Python</span>
+                <button class="run-btn" onclick="runPythonCode('bloomCode1')">
+                    <span class="play-icon">▶</span> Rulează
+                </button>
+            </div>
+            <pre class="language-python"><code class="language-python" id="bloomCode1">import hashlib
+
+class BloomFilter:
+    def __init__(self, size=100, num_hashes=3):
+        self.size = size
+        self.num_hashes = num_hashes
+        self.bit_array = [0] * size
+    
+    def _hashes(self, item):
+        """Generează k hash-uri pentru un element."""
+        hashes = []
+        for i in range(self.num_hashes):
+            h = hashlib.sha256(f"{item}{i}".encode()).hexdigest()
+            hashes.append(int(h, 16) % self.size)
+        return hashes
+    
+    def add(self, item):
+        for pos in self._hashes(item):
+            self.bit_array[pos] = 1
+        print(f"✓ Adăugat '{item}' la pozițiile: {self._hashes(item)}")
+    
+    def contains(self, item):
+        positions = self._hashes(item)
+        return all(self.bit_array[pos] == 1 for pos in positions)
+
+# Demo
+bf = BloomFilter(size=20, num_hashes=3)
+for elem in ["pisică", "câine", "papagal"]:
+    bf.add(elem)
+
+print(f"\nVector: {bf.bit_array}")
+print(f"\n'pisică' în filter? {bf.contains('pisică')}")
+print(f"'elefant' în filter? {bf.contains('elefant')}")</code></pre>
+            <div class="code-output" id="output-bloomCode1">
+                <span class="output-placeholder">Apasă "Rulează" pentru a vedea rezultatul...</span>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -3335,3 +3335,75 @@ td.neutral {
     color: #22d3ee;
 }
 
+/* ============================================
+   Slides Loading State
+   ============================================ */
+
+.slides-loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-lg);
+    color: var(--text-secondary);
+}
+
+.slides-loading p {
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 3px solid var(--bg-tertiary);
+    border-top-color: var(--accent-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.loading-error {
+    text-align: center;
+    padding: var(--space-xl);
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--accent-danger);
+}
+
+.loading-error p {
+    margin-bottom: var(--space-md);
+}
+
+.loading-error .error-details {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--accent-danger);
+    padding: var(--space-md);
+    background: var(--bg-code);
+    border-radius: var(--radius-sm);
+    margin-bottom: var(--space-lg);
+}
+
+.loading-error button {
+    padding: var(--space-sm) var(--space-lg);
+    background: var(--accent-primary);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-family: var(--font-body);
+    font-weight: 500;
+    transition: opacity 0.2s;
+}
+
+.loading-error button:hover {
+    opacity: 0.9;
+}
+

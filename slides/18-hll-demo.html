@@ -1,0 +1,39 @@
+<div class="slide-content">
+    <div class="slide-header">
+        <span class="slide-chapter">02 • HyperLogLog</span>
+        <h2>🎮 Demo Interactiv</h2>
+    </div>
+    <div class="slide-body">
+        <div class="interactive-demo hll-demo">
+            <div class="demo-controls">
+                <button onclick="addRandomElements(10)" class="demo-btn primary">+10 Elemente</button>
+                <button onclick="addRandomElements(100)" class="demo-btn primary">+100 Elemente</button>
+                <button onclick="addRandomElements(1000)" class="demo-btn primary">+1000 Elemente</button>
+                <button onclick="resetHLL()" class="demo-btn danger">Reset</button>
+            </div>
+            <div class="hll-stats">
+                <div class="stat-box">
+                    <span class="stat-label">Adăugate</span>
+                    <span class="stat-value" id="hllTotalAdded">0</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">Unice (real)</span>
+                    <span class="stat-value" id="hllActualUnique">0</span>
+                </div>
+                <div class="stat-box accent">
+                    <span class="stat-label">Estimare HLL</span>
+                    <span class="stat-value" id="hllEstimate">0</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">Eroare</span>
+                    <span class="stat-value" id="hllError">0%</span>
+                </div>
+            </div>
+            <div class="registers-container">
+                <h4>Registre HyperLogLog (16 registre)</h4>
+                <div class="registers-grid" id="hllRegisters"></div>
+            </div>
+        </div>
+    </div>
+</div>
+

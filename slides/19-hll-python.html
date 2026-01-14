@@ -1,0 +1,53 @@
+<div class="slide-content">
+    <div class="slide-header">
+        <span class="slide-chapter">02 • HyperLogLog</span>
+        <h2>📝 Implementare Python</h2>
+    </div>
+    <div class="slide-body code-slide">
+        <div class="code-block">
+            <div class="code-header">
+                <span class="code-lang">Python</span>
+                <button class="run-btn" onclick="runPythonCode('hllCode1')">
+                    <span class="play-icon">▶</span> Rulează
+                </button>
+            </div>
+            <pre class="language-python"><code class="language-python" id="hllCode1">import hashlib, math
+
+class HyperLogLog:
+    def __init__(self, p=4):
+        self.p = p
+        self.m = 1 << p  # 2^p registre
+        self.registers = [0] * self.m
+        self.alpha = 0.673 if self.m == 16 else 0.7213/(1+1.079/self.m)
+    
+    def add(self, item):
+        h = int(hashlib.md5(str(item).encode()).hexdigest()[:8], 16)
+        idx = h >> (32 - self.p)
+        remaining = h & ((1 << (32 - self.p)) - 1)
+        zeros = 1
+        for i in range(31 - self.p, -1, -1):
+            if remaining & (1 << i): break
+            zeros += 1
+        self.registers[idx] = max(self.registers[idx], zeros)
+    
+    def estimate(self):
+        Z = sum(2**(-r) for r in self.registers)
+        E = self.alpha * self.m * self.m / Z
+        V = self.registers.count(0)
+        if E <= 2.5 * self.m and V > 0:
+            E = self.m * math.log(self.m / V)
+        return int(E)
+
+hll = HyperLogLog(p=4)
+for i in range(1000): hll.add(f"elem_{i}")
+for i in range(500): hll.add(f"elem_{i}")  # duplicate
+
+print(f"Registre: {hll.registers}")
+print(f"Unice reale: 1000, Estimare: {hll.estimate()}")</code></pre>
+            <div class="code-output" id="output-hllCode1">
+                <span class="output-placeholder">Apasă "Rulează" pentru a vedea rezultatul...</span>
+            </div>
+        </div>
+    </div>
+</div>
+
