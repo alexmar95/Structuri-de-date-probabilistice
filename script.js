@@ -10,6 +10,7 @@ let currentSlide = 0;
 let totalSlides = 0;
 let slides = [];
 let currentTheme = 'dark';
+let hideNavTimeout = null;
 
 let bloomFilter = {
     size: 32,
@@ -112,6 +113,9 @@ function goToSlide(index, updateURL = true) {
     
     // Add active to current slide
     slides[index].classList.add('active');
+    
+    // Scroll slide to top
+    slides[index].scrollTop = 0;
     
     // Update current slide
     currentSlide = index;
@@ -273,6 +277,69 @@ function setTheme(theme) {
 function toggleTheme() {
     const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
     setTheme(newTheme);
+}
+
+// ============================================
+// Auto-hide Navigation
+// ============================================
+
+let isNavHovered = false;
+
+function initAutoHideNav() {
+    const slideNav = document.querySelector('.slide-nav');
+    if (!slideNav) return;
+    
+    // Track when mouse is over the nav
+    slideNav.addEventListener('mouseenter', () => {
+        isNavHovered = true;
+        showNav();
+    });
+    
+    slideNav.addEventListener('mouseleave', () => {
+        isNavHovered = false;
+        resetHideNavTimer();
+    });
+    
+    // Show nav on mouse move
+    document.addEventListener('mousemove', () => {
+        showNav();
+        resetHideNavTimer();
+    });
+    
+    // Also show on touch for mobile
+    document.addEventListener('touchstart', () => {
+        showNav();
+        resetHideNavTimer();
+    });
+    
+    // Start the initial timer
+    resetHideNavTimer();
+}
+
+function showNav() {
+    const slideNav = document.querySelector('.slide-nav');
+    if (slideNav) {
+        slideNav.classList.remove('hidden');
+    }
+}
+
+function hideNav() {
+    // Don't hide if mouse is over the nav
+    if (isNavHovered) return;
+    
+    const slideNav = document.querySelector('.slide-nav');
+    if (slideNav) {
+        slideNav.classList.add('hidden');
+    }
+}
+
+function resetHideNavTimer() {
+    // Clear existing timer
+    if (hideNavTimeout) {
+        clearTimeout(hideNavTimeout);
+    }
+    // Set new timer to hide after 3 seconds
+    hideNavTimeout = setTimeout(hideNav, 3000);
 }
 
 async function runPythonCode(codeId) {
@@ -583,6 +650,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Initialize slides
     initSlides();
+    
+    // Initialize auto-hide navigation
+    initAutoHideNav();
     
     // Load Pyodide
     loadPyodideRuntime();

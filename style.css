@@ -477,6 +477,13 @@ a:hover {
     border: 1px solid var(--bg-tertiary);
     border-radius: 50px;
     z-index: 1000;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.slide-nav.hidden {
+    opacity: 0;
+    transform: translateX(-50%) translateY(20px);
+    pointer-events: none;
 }
 
 .slide-nav-btn {
@@ -739,7 +746,7 @@ a:hover {
     width: 100vw;
     height: 100vh;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
     opacity: 0;
     visibility: hidden;
@@ -747,11 +754,28 @@ a:hover {
     background: var(--bg-primary);
     overflow-y: auto;
     padding: var(--space-2xl);
+    padding-top: 60px;
 }
 
 .slide.active {
     opacity: 1;
     visibility: visible;
+}
+
+/* Cover and final slides should be centered */
+.slide.cover,
+.slide.final-slide {
+    align-items: center;
+    padding-top: var(--space-2xl);
+}
+
+/* Code slides need more compact layout */
+.code-slide .slide-header {
+    margin-bottom: var(--space-lg);
+}
+
+.code-slide .slide-header h2 {
+    font-size: 2rem;
 }
 
 .slide-content {
@@ -2002,7 +2026,7 @@ td.neutral {
     border: 1px solid var(--bg-tertiary);
     border-radius: var(--radius-lg);
     overflow: hidden;
-    margin-bottom: var(--space-xl);
+    margin-bottom: var(--space-md);
 }
 
 .code-header {
@@ -2053,15 +2077,17 @@ td.neutral {
 }
 
 .code-block pre {
-    padding: var(--space-lg);
+    padding: var(--space-md);
     overflow-x: auto;
     margin: 0;
+    max-height: 320px;
+    overflow-y: auto;
 }
 
 .code-block code {
     font-family: var(--font-mono);
-    font-size: 0.9rem;
-    line-height: 1.6;
+    font-size: 0.8rem;
+    line-height: 1.5;
     color: var(--text-secondary);
 }
 
@@ -2117,14 +2143,14 @@ td.neutral {
 }
 
 .code-output {
-    padding: var(--space-lg);
+    padding: var(--space-md);
     background: var(--bg-secondary);
     border-top: 1px solid var(--bg-tertiary);
     font-family: var(--font-mono);
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     color: var(--text-secondary);
     white-space: pre-wrap;
-    max-height: 400px;
+    max-height: 200px;
     overflow-y: auto;
 }
 
@@ -2781,8 +2807,17 @@ td.neutral {
 }
 
 .scale-comparison.compact {
-    padding: var(--space-lg);
-    margin-bottom: var(--space-lg);
+    padding: var(--space-md);
+    margin-bottom: var(--space-md);
+}
+
+.scale-comparison.compact .scale-item {
+    padding: var(--space-sm) var(--space-md);
+    min-width: 100px;
+}
+
+.scale-comparison.compact .scale-number {
+    font-size: 1.1rem;
 }
 
 .scale-item {
@@ -2824,22 +2859,177 @@ td.neutral {
 .problem-list {
     display: flex;
     flex-direction: column;
-    gap: var(--space-md);
+    gap: var(--space-sm);
 }
 
 .problem-item {
     display: flex;
     align-items: center;
-    gap: var(--space-md);
-    padding: var(--space-md) var(--space-lg);
+    gap: var(--space-sm);
+    padding: var(--space-sm) var(--space-md);
     background: rgba(239, 68, 68, 0.08);
     border-radius: var(--radius-md);
     color: var(--text-secondary);
-    font-size: 1.05rem;
+    font-size: 0.95rem;
 }
 
 .problem-icon {
     font-size: 1.2rem;
+}
+
+/* Memory Explanation Visual */
+.memory-explanation {
+    margin-bottom: var(--space-lg);
+}
+
+.memory-formula-box {
+    padding: var(--space-lg);
+    background: var(--bg-card);
+    border: 1px solid var(--bg-tertiary);
+    border-radius: var(--radius-lg);
+}
+
+.memory-formula-box h4 {
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-md);
+    text-align: center;
+}
+
+.memory-components {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+    margin-bottom: var(--space-md);
+}
+
+.mem-component {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--space-sm) var(--space-md);
+    background: var(--bg-secondary);
+    border-radius: var(--radius-md);
+    min-width: 120px;
+}
+
+.mem-icon {
+    font-size: 1.2rem;
+    margin-bottom: var(--space-xs);
+}
+
+.mem-name {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.mem-size {
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    color: var(--accent-primary);
+    font-weight: 700;
+}
+
+.mem-desc {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+}
+
+.mem-plus {
+    font-family: var(--font-mono);
+    font-size: 1.2rem;
+    color: var(--text-muted);
+}
+
+.memory-total {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-md);
+    padding: var(--space-sm);
+    background: rgba(6, 182, 212, 0.1);
+    border-radius: var(--radius-md);
+}
+
+.total-label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.total-value {
+    font-family: var(--font-mono);
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--accent-primary);
+}
+
+/* Memory Scaling Visualization */
+.memory-scaling {
+    margin-bottom: var(--space-lg);
+}
+
+.memory-scaling h4 {
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-md);
+    text-align: center;
+}
+
+.scaling-bars {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.scale-row {
+    display: grid;
+    grid-template-columns: 120px 1fr 100px;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--radius-sm);
+}
+
+.scale-row.highlight {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.scale-n {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    text-align: right;
+}
+
+.scale-bar-container {
+    height: 20px;
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+}
+
+.scale-bar {
+    height: 100%;
+    background: var(--gradient-primary);
+    border-radius: var(--radius-sm);
+    transition: width 0.5s ease;
+}
+
+.scale-bar.bad {
+    background: var(--gradient-orange);
+}
+
+.scale-mem {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    text-align: left;
 }
 
 /* Memory Insight */
@@ -2847,13 +3037,13 @@ td.neutral {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: var(--space-md);
-    padding: var(--space-lg);
+    gap: var(--space-sm);
+    padding: var(--space-sm) var(--space-md);
     background: var(--bg-card);
     border: 1px solid var(--accent-tertiary);
     border-radius: var(--radius-md);
-    margin-top: var(--space-lg);
-    font-size: 1.1rem;
+    margin-top: var(--space-md);
+    font-size: 1rem;
     color: var(--text-secondary);
 }
 

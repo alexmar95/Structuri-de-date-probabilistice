@@ -191,88 +191,83 @@
             <div class="slide-content">
                 <div class="slide-header">
                     <span class="slide-chapter">00 • Problema</span>
-                    <h2>📊 Calculăm memoria necesară</h2>
+                    <h2>📊 Cât RAM consumă un HashSet?</h2>
                 </div>
-                <div class="slide-body code-slide">
-                    <div class="scale-comparison compact">
-                        <div class="scale-item">
-                            <div class="scale-number">10 milioane</div>
-                            <div class="scale-label">URL-uri</div>
-                        </div>
-                        <div class="scale-arrow">×</div>
-                        <div class="scale-item">
-                            <div class="scale-number">~50 bytes</div>
-                            <div class="scale-label">per URL + overhead</div>
-                        </div>
-                        <div class="scale-arrow">=</div>
-                        <div class="scale-item problem">
-                            <div class="scale-number">~500 MB</div>
-                            <div class="scale-label">RAM necesar</div>
-                        </div>
-                    </div>
-                    <div class="code-block">
-                        <div class="code-header">
-                            <span class="code-lang">Python</span>
-                            <button class="run-btn" onclick="runPythonCode('hashsetMemory')">
-                                <span class="play-icon">▶</span> Rulează
-                            </button>
-                        </div>
-                        <pre class="language-python"><code class="language-python" id="hashsetMemory">def estimate_hashset_memory(num_elements, avg_element_size=50):
-    """
-    Estimare memorie pentru un HashSet:
-    - Fiecare element: dimensiunea datelor + overhead obiect
-    - Tabel hash: ~8 bytes per bucket (pointer)
-    - Load factor ~0.75 → trebuie mai multe bucket-uri
-    """
-    element_overhead = 50  # overhead per obiect
-    bucket_size = 8        # pointer per bucket
-    load_factor = 0.75
-    
-    data_size = num_elements * avg_element_size
-    object_overhead = num_elements * element_overhead
-    buckets_needed = int(num_elements / load_factor)
-    hash_table_size = buckets_needed * bucket_size
-    
-    return data_size + object_overhead + hash_table_size
-
-# Problema noastră cu URL-urile malițioase
-scenarios = [
-    ("10K emails spam", 10_000, 30),
-    ("1M utilizatori", 1_000_000, 20),
-    ("10M URL-uri ⬅️", 10_000_000, 50),  # cazul nostru!
-    ("100M IP-uri", 100_000_000, 16),
-]
-
-print("HashSet - Memorie necesară:\n")
-print(f"{'Scenariul':<25} {'Elemente':>12} {'Memorie':>12}")
-print("-" * 52)
-
-for name, n, size in scenarios:
-    mem = estimate_hashset_memory(n, size)
-    if mem < 1024**2:
-        mem_str = f"{mem/1024:.1f} KB"
-    elif mem < 1024**3:
-        mem_str = f"{mem/1024**2:.1f} MB"
-    else:
-        mem_str = f"{mem/1024**3:.2f} GB"
-    print(f"{name:<25} {n:>12,} {mem_str:>12}")</code></pre>
-                        <div class="code-output" id="output-hashsetMemory">
-                            <span class="output-placeholder">Apasă "Rulează" pentru a vedea rezultatul...</span>
+                <div class="slide-body">
+                    <div class="memory-explanation">
+                        <div class="memory-formula-box">
+                            <h4>Pentru fiecare element stocăm:</h4>
+                            <div class="memory-components">
+                                <div class="mem-component">
+                                    <span class="mem-icon">📝</span>
+                                    <span class="mem-name">Datele</span>
+                                    <span class="mem-size">~50 bytes</span>
+                                    <span class="mem-desc">(URL-ul în sine)</span>
+                                </div>
+                                <span class="mem-plus">+</span>
+                                <div class="mem-component">
+                                    <span class="mem-icon">📦</span>
+                                    <span class="mem-name">Overhead obiect</span>
+                                    <span class="mem-size">~40 bytes</span>
+                                    <span class="mem-desc">(metadata Java/Python)</span>
+                                </div>
+                                <span class="mem-plus">+</span>
+                                <div class="mem-component">
+                                    <span class="mem-icon">🔗</span>
+                                    <span class="mem-name">Pointer în tabel</span>
+                                    <span class="mem-size">~8 bytes</span>
+                                    <span class="mem-desc">(referință hash table)</span>
+                                </div>
+                            </div>
+                            <div class="memory-total">
+                                <span class="total-label">Total per element:</span>
+                                <span class="total-value">~100 bytes</span>
+                            </div>
                         </div>
                     </div>
-                    <div class="problem-list">
-                        <div class="problem-item">
-                            <span class="problem-icon">❌</span>
-                            <span>500 MB per aplicație/tab? Imposibil pe mobile!</span>
-                        </div>
-                        <div class="problem-item">
-                            <span class="problem-icon">❌</span>
-                            <span>Verificare pe server la fiecare URL? Latență + probleme de privacy!</span>
+                    <div class="memory-scaling">
+                        <h4>Memoria crește <em>liniar</em> cu numărul de elemente:</h4>
+                        <div class="scaling-bars">
+                            <div class="scale-row">
+                                <span class="scale-n">1K URL-uri</span>
+                                <div class="scale-bar-container">
+                                    <div class="scale-bar" style="width: 1%;"></div>
+                                </div>
+                                <span class="scale-mem good">~100 KB</span>
+                            </div>
+                            <div class="scale-row">
+                                <span class="scale-n">100K URL-uri</span>
+                                <div class="scale-bar-container">
+                                    <div class="scale-bar" style="width: 10%;"></div>
+                                </div>
+                                <span class="scale-mem neutral">~10 MB</span>
+                            </div>
+                            <div class="scale-row">
+                                <span class="scale-n">1M URL-uri</span>
+                                <div class="scale-bar-container">
+                                    <div class="scale-bar" style="width: 20%;"></div>
+                                </div>
+                                <span class="scale-mem neutral">~100 MB</span>
+                            </div>
+                            <div class="scale-row highlight">
+                                <span class="scale-n"><strong>10M URL-uri</strong></span>
+                                <div class="scale-bar-container">
+                                    <div class="scale-bar bad" style="width: 60%;"></div>
+                                </div>
+                                <span class="scale-mem bad"><strong>~1 GB</strong></span>
+                            </div>
+                            <div class="scale-row">
+                                <span class="scale-n">100M URL-uri</span>
+                                <div class="scale-bar-container">
+                                    <div class="scale-bar bad" style="width: 100%;"></div>
+                                </div>
+                                <span class="scale-mem bad">~10 GB</span>
+                            </div>
                         </div>
                     </div>
                     <div class="memory-insight">
-                        <span class="insight-icon">🤔</span>
-                        <span>Întrebarea cheie: <strong>Avem nevoie de 100% precizie în toate cazurile?</strong></span>
+                        <span class="insight-icon">💡</span>
+                        <span>Problema: memoria HashSet crește <strong>O(n)</strong> — proporțional cu datele!</span>
                     </div>
                 </div>
             </div>
