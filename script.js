@@ -127,12 +127,11 @@ function goToSlide(index, updateURL = true) {
 
 function updateURLWithSlide(index) {
     const slideNum = index + 1;
-    const newURL = `${window.location.pathname}?slide=${slideNum}#slide-${slideNum}`;
+    const newURL = `${window.location.pathname}?slide=${slideNum}`;
     window.history.replaceState({ slide: index }, '', newURL);
 }
 
 function getSlideFromURL() {
-    // Check query string first (?slide=5)
     const urlParams = new URLSearchParams(window.location.search);
     const querySlide = urlParams.get('slide');
     if (querySlide) {
@@ -141,17 +140,6 @@ function getSlideFromURL() {
             return slideNum - 1; // Convert to 0-based index
         }
     }
-    
-    // Check hash fragment (#slide-5)
-    const hash = window.location.hash;
-    const hashMatch = hash.match(/#slide-(\d+)/);
-    if (hashMatch) {
-        const slideNum = parseInt(hashMatch[1], 10);
-        if (!isNaN(slideNum) && slideNum >= 1) {
-            return slideNum - 1;
-        }
-    }
-    
     return 0; // Default to first slide
 }
 
