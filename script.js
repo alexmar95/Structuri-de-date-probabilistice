@@ -26,7 +26,9 @@ let hllState = {
     totalAdded: 0,
     uniqueSet: new Set(),
     insertLog: [],  // Track recent insertions
-    sllPercent: 30  // SuperLogLog: percentage of top registers to exclude
+    sllPercent: 30,  // SuperLogLog: percentage of top registers to exclude
+    smallRangeCorrection: true,  // Linear counting for small cardinalities
+    largeRangeCorrection: true   // Hash collision correction for large cardinalities
 };
 
 // ============================================
@@ -824,16 +826,40 @@ function hllEstimate() {
     }
     
     let E = alpha * m * m / Z;
+    let correctionApplied = null;
+    const rawE = E;
     
-    // Small range correction
-    if (E <= 2.5 * m) {
+    // Small range correction (Linear Counting)
+    if (hllState.smallRangeCorrection && E <= 2.5 * m) {
         const V = hllState.registers.filter(r => r === 0).length;
         if (V > 0) {
             E = m * Math.log(m / V);
+            correctionApplied = 'small';
         }
     }
     
+    // Large range correction (hash collision adjustment)
+    const twoTo32 = Math.pow(2, 32);
+    if (hllState.largeRangeCorrection && E > twoTo32 / 30) {
+        E = -twoTo32 * Math.log(1 - E / twoTo32);
+        correctionApplied = 'large';
+    }
+    
+    // Store correction info for display
+    hllState.lastCorrection = correctionApplied;
+    hllState.rawEstimate = Math.round(rawE);
+    
     return Math.round(E);
+}
+
+function toggleSmallCorrection() {
+    hllState.smallRangeCorrection = !hllState.smallRangeCorrection;
+    renderHLL();
+}
+
+function toggleLargeCorrection() {
+    hllState.largeRangeCorrection = !hllState.largeRangeCorrection;
+    renderHLL();
 }
 
 function updateSLLPercent() {
@@ -923,6 +949,27 @@ function renderHLL() {
         document.getElementById('hllError'),
         hllEst
     );
+    
+    // Show correction info
+    const correctionInfo = document.getElementById('hllCorrectionInfo');
+    if (correctionInfo) {
+        if (hllState.lastCorrection === 'small') {
+            const V = hllState.registers.filter(r => r === 0).length;
+            correctionInfo.innerHTML = `📉 Linear Counting activ (V=${V} registre=0)`;
+            correctionInfo.style.color = 'var(--accent-primary)';
+        } else if (hllState.lastCorrection === 'large') {
+            correctionInfo.innerHTML = `📈 Corecție coliziuni hash activă`;
+            correctionInfo.style.color = 'var(--accent-tertiary)';
+        } else {
+            correctionInfo.innerHTML = '';
+        }
+    }
+    
+    // Sync checkboxes
+    const smallToggle = document.getElementById('smallCorrectionToggle');
+    const largeToggle = document.getElementById('largeCorrectionToggle');
+    if (smallToggle) smallToggle.checked = hllState.smallRangeCorrection;
+    if (largeToggle) largeToggle.checked = hllState.largeRangeCorrection;
     
     // Render insertion log
     const logEl = document.getElementById('hllInsertLog');
@@ -1115,8 +1162,11 @@ window.addRandomElements = addRandomElements;
 window.addRandomElementsCustom = addRandomElementsCustom;
 window.updateHLLConfig = updateHLLConfig;
 window.updateSLLPercent = updateSLLPercent;
+window.toggleSmallCorrection = toggleSmallCorrection;
+window.toggleLargeCorrection = toggleLargeCorrection;
 window.resetHLL = resetHLL;
 window.nextSlide = nextSlide;
 window.prevSlide = prevSlide;
 window.goToSlide = goToSlide;
 window.updateBloomMathCalc = updateBloomMathCalc;
+

@@ -1,7 +1,7 @@
 <div class="slide-content">
     <div class="slide-header">
         <span class="slide-chapter">02 • HyperLogLog</span>
-        <h2>🎮 Demo Interactiv</h2>
+        <h2>🎮 HLL Demo</h2>
     </div>
     <div class="slide-body">
         <div class="interactive-demo hll-demo" style="padding: var(--space-md);">
@@ -76,7 +76,20 @@
                         <span class="stat-value" id="hllEstimate" style="font-size: 1.1rem; color: var(--accent-primary);">0</span>
                         <span id="hllError" style="font-size: 0.75rem; color: var(--text-muted);">0%</span>
                     </div>
+                    <div id="hllCorrectionInfo" style="font-size: 0.6rem; color: var(--accent-success); margin-top: 2px;"></div>
                 </div>
+            </div>
+
+            <!-- Corrections toggles -->
+            <div class="corrections-toggles" style="display: flex; gap: var(--space-md); margin-bottom: var(--space-md); font-size: 0.75rem; flex-wrap: wrap;">
+                <label style="display: flex; align-items: center; gap: var(--space-xs); cursor: pointer;">
+                    <input type="checkbox" id="smallCorrectionToggle" checked onchange="toggleSmallCorrection()">
+                    <span>📉 Corecție mici (E≤2.5m): Linear Counting</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: var(--space-xs); cursor: pointer;">
+                    <input type="checkbox" id="largeCorrectionToggle" checked onchange="toggleLargeCorrection()">
+                    <span>📈 Corecție mari (E>2³²/30): Hash collision</span>
+                </label>
             </div>
 
             <!-- Recent insertions log -->
