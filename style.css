@@ -2719,7 +2719,7 @@ td.neutral {
     font-size: 0.95rem;
     color: var(--text-secondary);
     width: 100%;
-    max-width: 300px;
+    max-width: 400px;
 }
 
 .flow-step.success {
@@ -3202,7 +3202,6 @@ td.neutral {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: var(--space-md);
     flex-wrap: wrap;
 }
 
@@ -3863,6 +3862,69 @@ td.neutral {
     font-size: 0.95rem;
     color: var(--accent-tertiary);
     font-weight: 500;
+}
+
+/* HashSet Visual Explanation */
+.hashset-explained {
+    background: var(--bg-card);
+    border: 1px solid var(--bg-tertiary);
+    border-radius: var(--radius-md);
+    padding: var(--space-md) var(--space-lg);
+    margin-bottom: var(--space-lg);
+}
+
+.hashset-visual {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+}
+
+.hash-flow-item {
+    padding: var(--space-xs) var(--space-md);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+}
+
+.hash-flow-item .hash-input {
+    background: var(--bg-tertiary);
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+}
+
+.hash-flow-item .hash-func {
+    color: var(--accent-primary);
+    font-weight: 600;
+}
+
+.hash-flow-item .hash-output {
+    color: var(--accent-secondary);
+}
+
+.hash-flow-item .hash-mod {
+    color: var(--text-muted);
+}
+
+.hash-flow-item.bucket {
+    background: var(--accent-success);
+    color: var(--bg-primary);
+    font-weight: 600;
+    padding: var(--space-xs) var(--space-md);
+}
+
+.hash-flow-arrow {
+    color: var(--text-muted);
+    font-size: 1rem;
+}
+
+.hashset-note {
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: var(--space-sm);
 }
 
 /* ============================================

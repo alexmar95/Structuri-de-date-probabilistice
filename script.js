@@ -69,9 +69,10 @@ async function loadSlides() {
             // Add extra classes
             config.classes.forEach(cls => section.classList.add(cls));
             
-            // Set data attribute
+            // Set data attributes
             section.setAttribute('data-slide', index);
             section.setAttribute('data-title', config.title);
+            section.setAttribute('data-file', config.file.replace('.html', ''));
             
             // Set inner HTML
             section.innerHTML = html;
@@ -208,8 +209,9 @@ function goToSlide(index, updateURL = true) {
 
 function updateURLWithSlide(index) {
     const slideNum = index + 1;
-    const newURL = `${window.location.pathname}?slide=${slideNum}`;
-    window.history.replaceState({ slide: index }, '', newURL);
+    const slideFile = slides[index]?.getAttribute('data-file') || '';
+    const newURL = `${window.location.pathname}?slide=${slideNum}&file=${slideFile}`;
+    window.history.replaceState({ slide: index, file: slideFile }, '', newURL);
 }
 
 function getSlideFromURL() {

@@ -5,7 +5,7 @@
     </div>
     <div class="slide-body">
         <p class="lead">
-            Structurile pe care le-am învățat ne oferă operații în <strong>O(1)</strong>...
+            Structuri care ne-ar oferi operații în <strong>O(1)</strong>...
         </p>
         <div class="recap-grid">
             <div class="recap-card highlighted">
@@ -16,27 +16,48 @@
                     <span class="op-badge accent">contains(url) → O(1)</span>
                     <span class="op-badge">remove(url) → O(1)</span>
                 </div>
-                <p>Perfect pentru verificarea apartenenței!</p>
-                <div class="recap-code">
-                    <code>blacklist.contains(url) → true/false</code>
-                </div>
+                <p>Exact ce ne trebuie!</p>
             </div>
             <div class="solution-flow">
                 <div class="flow-step">
                     <span class="flow-num">1</span>
-                    <span>Încărcăm toate URL-urile în HashSet</span>
+                    <span>Încărcăm URL-urile malițioase în <strong>HashSet</strong></span>
                 </div>
                 <div class="flow-arrow">↓</div>
                 <div class="flow-step">
                     <span class="flow-num">2</span>
-                    <span>La fiecare vizită: <code>contains(url)</code></span>
+                    <span>La URL scan: <code>contains(url)</code></span>
                 </div>
                 <div class="flow-arrow">↓</div>
                 <div class="flow-step success">
                     <span class="flow-num">✓</span>
-                    <span>Răspuns instant în O(1)!</span>
+                    <span>Răspuns instant!</span>
                 </div>
             </div>
+        </div>
+        <div class="hashset-explained">
+            <div class="hashset-visual">
+                <div class="hash-flow-item">
+                    <span class="hash-input">"bitdefender.com"</span>
+                </div>
+                <div class="hash-flow-arrow">→</div>
+                <div class="hash-flow-item">
+                    <span class="hash-func">hash()</span>
+                </div>
+                <div class="hash-flow-arrow">→</div>
+                <div class="hash-flow-item">
+                    <span class="hash-output">4829</span>
+                </div>
+                <div class="hash-flow-arrow">→</div>
+                <div class="hash-flow-item">
+                    <span class="hash-mod">% size</span>
+                </div>
+                <div class="hash-flow-arrow">→</div>
+                <div class="hash-flow-item bucket">
+                    <span class="bucket-idx">[7]</span>
+                </div>
+            </div>
+            <div class="hashset-note">Element → hash → index în array → acces direct O(1)</div>
         </div>
         <div class="recap-insight warning">
             <span class="insight-icon">⚠️</span>
@@ -44,4 +65,3 @@
         </div>
     </div>
 </div>
-
