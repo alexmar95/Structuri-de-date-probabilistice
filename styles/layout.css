@@ -1,0 +1,532 @@
+/* ============================================
+   LAYOUT STYLES
+   Navigation, progress bar, slide containers
+   ============================================ */
+
+/* ============================================
+   Navigation
+   ============================================ */
+
+.main-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-md) var(--space-xl);
+    background: rgba(10, 14, 23, 0.9);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(6, 182, 212, 0.1);
+    transform: translateY(-100%);
+    transition: transform 0.3s ease;
+}
+
+.main-nav.visible {
+    transform: translateY(0);
+}
+
+.nav-brand {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.nav-brand .accent {
+    color: var(--accent-primary);
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: var(--space-xl);
+}
+
+.nav-links a {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: color 0.2s ease;
+    position: relative;
+}
+
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--gradient-primary);
+    transition: width 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: var(--text-primary);
+}
+
+.nav-links a:hover::after {
+    width: 100%;
+}
+
+/* ============================================
+   Progress Bar (Top)
+   ============================================ */
+
+.progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--bg-tertiary);
+    z-index: 1000;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--gradient-primary);
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+/* ============================================
+   Slide Navigation (Bottom)
+   ============================================ */
+
+.slide-nav {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: var(--space-lg);
+    padding: var(--space-sm) var(--space-lg);
+    background: rgba(17, 24, 39, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--bg-tertiary);
+    border-radius: 50px;
+    z-index: 1000;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.slide-nav.hidden {
+    opacity: 0;
+    transform: translateX(-50%) translateY(20px);
+    pointer-events: none;
+}
+
+.slide-nav-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    background: var(--bg-tertiary);
+    border: 1px solid transparent;
+    border-radius: 50%;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.slide-nav-btn:hover {
+    background: var(--accent-primary);
+    color: var(--bg-primary);
+    transform: scale(1.1);
+}
+
+.slide-nav-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.slide-nav-btn:disabled:hover {
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+}
+
+.slide-nav-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+.slide-progress {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-xs);
+    font-family: var(--font-mono);
+    min-width: 60px;
+    justify-content: center;
+}
+
+.current-slide {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--accent-primary);
+}
+
+.slide-separator {
+    color: var(--text-muted);
+}
+
+.total-slides {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+/* ============================================
+   Top Controls (Theme Toggle + Pyodide Status)
+   ============================================ */
+
+.top-controls {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    z-index: 1000;
+}
+
+.pyodide-status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--bg-tertiary);
+    border-radius: 50%;
+    cursor: help;
+}
+
+.status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--accent-danger);
+}
+
+.status-dot.loading {
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+.status-dot.ready {
+    background: var(--accent-success);
+    animation: none;
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--bg-tertiary);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 0;
+}
+
+.theme-toggle:hover {
+    border-color: var(--accent-primary);
+    transform: scale(1.1);
+}
+
+.theme-icon {
+    font-size: 1rem;
+    line-height: 1;
+}
+
+.theme-icon.dark {
+    display: none;
+}
+
+[data-theme="light"] .theme-icon.light {
+    display: none;
+}
+
+[data-theme="light"] .theme-icon.dark {
+    display: block;
+}
+
+/* ============================================
+   Slide Dots (Right Side)
+   ============================================ */
+
+.slide-dots {
+    position: fixed;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 1000;
+}
+
+.slide-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.slide-dot:hover {
+    background: var(--accent-primary);
+    transform: scale(1.3);
+}
+
+/* Custom tooltip for slide dots */
+.slide-dot::before {
+    content: attr(data-tooltip);
+    position: absolute;
+    right: 25px;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 6px 12px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--bg-tertiary);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-primary);
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    box-shadow: var(--shadow-md);
+    z-index: 1001;
+}
+
+.slide-dot::after {
+    content: '';
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 5px solid transparent;
+    border-left-color: var(--bg-tertiary);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+
+.slide-dot:hover::before,
+.slide-dot:hover::after {
+    opacity: 1;
+}
+
+.slide-dot:hover::before {
+    transform: translateY(-50%) translateX(-5px);
+}
+
+.slide-dot.active {
+    background: var(--accent-primary);
+    border-color: var(--accent-primary);
+    transform: scale(1.2);
+}
+
+.slide-dot.transition-dot:hover,
+.slide-dot.transition-dot.active {
+    background: var(--accent-secondary);
+    border-color: var(--accent-secondary);
+}
+
+.slide-dot.bloom-dot:hover,
+.slide-dot.bloom-dot.active {
+    background: var(--accent-primary);
+    border-color: var(--accent-primary);
+}
+
+.slide-dot.hll-dot:hover,
+.slide-dot.hll-dot.active {
+    background: var(--accent-tertiary);
+    border-color: var(--accent-tertiary);
+}
+
+/* ============================================
+   Slides Container
+   ============================================ */
+
+.slides-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+}
+
+.slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+    background: var(--bg-primary);
+    overflow-y: auto;
+    padding: var(--space-2xl);
+    padding-top: 60px;
+}
+
+.slide.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Cover and final slides should be centered */
+.slide.cover,
+.slide.final-slide {
+    align-items: center;
+    padding-top: var(--space-2xl);
+}
+
+/* Code slides need more compact layout */
+.code-slide .slide-header {
+    margin-bottom: var(--space-lg);
+}
+
+.code-slide .slide-header h2 {
+    font-size: 2rem;
+}
+
+.slide-content {
+    max-width: 1200px;
+    width: 100%;
+}
+
+/* ============================================
+   Slide Header
+   ============================================ */
+
+.slide-header {
+    margin-bottom: var(--space-2xl);
+    text-align: center;
+}
+
+.slide-chapter {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--accent-primary);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: var(--space-md);
+}
+
+.hll-section .slide-chapter {
+    color: var(--accent-tertiary);
+}
+
+.slide-header h2 {
+    font-family: var(--font-display);
+    font-size: 2.75rem;
+    font-weight: 700;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.hll-section .slide-header h2 {
+    background: var(--gradient-orange);
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+.slide-body {
+    width: 100%;
+}
+
+.slide-body.centered {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* ============================================
+   Slides Loading State
+   ============================================ */
+
+.slides-loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-lg);
+    color: var(--text-secondary);
+}
+
+.slides-loading p {
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 3px solid var(--bg-tertiary);
+    border-top-color: var(--accent-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.loading-error {
+    text-align: center;
+    padding: var(--space-xl);
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--accent-danger);
+}
+
+.loading-error p {
+    margin-bottom: var(--space-md);
+}
+
+.loading-error .error-details {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--accent-danger);
+    padding: var(--space-md);
+    background: var(--bg-code);
+    border-radius: var(--radius-sm);
+    margin-bottom: var(--space-lg);
+}
+
+.loading-error button {
+    padding: var(--space-sm) var(--space-lg);
+    background: var(--accent-primary);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-family: var(--font-body);
+    font-weight: 500;
+    transition: opacity 0.2s;
+}
+
+.loading-error button:hover {
+    opacity: 0.9;
+}
+

@@ -1,0 +1,138 @@
+/* ============================================
+   VARIABLES & THEME DEFINITIONS
+   Design tokens for colors, typography, spacing
+   ============================================ */
+
+:root {
+    /* Color Palette - Deep Space Theme (Dark) */
+    --bg-primary: #0a0e17;
+    --bg-secondary: #111827;
+    --bg-tertiary: #1e293b;
+    --bg-card: #0f172a;
+    --bg-code: #0c1222;
+    
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    
+    --accent-primary: #06b6d4;
+    --accent-secondary: #8b5cf6;
+    --accent-tertiary: #f59e0b;
+    --accent-success: #10b981;
+    --accent-danger: #ef4444;
+    
+    --gradient-primary: linear-gradient(135deg, #06b6d4 0%, #8b5cf6 100%);
+    --gradient-secondary: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+    --gradient-orange: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+    
+    /* Typography */
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-body: 'Source Sans 3', 'Segoe UI', sans-serif;
+    --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+    
+    /* Spacing */
+    --space-xs: 0.25rem;
+    --space-sm: 0.5rem;
+    --space-md: 1rem;
+    --space-lg: 1.5rem;
+    --space-xl: 2rem;
+    --space-2xl: 3rem;
+    --space-3xl: 4rem;
+    
+    /* Border Radius */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 20px;
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+    --shadow-glow: 0 0 30px rgba(6, 182, 212, 0.3);
+}
+
+/* Light Theme */
+[data-theme="light"] {
+    --bg-primary: #f8fafc;
+    --bg-secondary: #f1f5f9;
+    --bg-tertiary: #e2e8f0;
+    --bg-card: #ffffff;
+    --bg-code: #f1f5f9;
+    
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-muted: #64748b;
+    
+    --accent-primary: #0891b2;
+    --accent-secondary: #7c3aed;
+    --accent-tertiary: #d97706;
+    --accent-success: #059669;
+    --accent-danger: #dc2626;
+    
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --shadow-glow: 0 0 30px rgba(8, 145, 178, 0.2);
+}
+
+/* ============================================
+   Light Theme Specific Adjustments
+   ============================================ */
+
+[data-theme="light"] .cover-bg {
+    background: 
+        radial-gradient(ellipse at 20% 80%, rgba(8, 145, 178, 0.1) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(124, 58, 237, 0.1) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(217, 119, 6, 0.05) 0%, transparent 70%),
+        var(--bg-primary);
+}
+
+[data-theme="light"] .grid-overlay {
+    background-image: 
+        linear-gradient(rgba(8, 145, 178, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(8, 145, 178, 0.05) 1px, transparent 1px);
+}
+
+[data-theme="light"] .bit {
+    color: var(--accent-primary);
+    opacity: 0.3;
+}
+
+[data-theme="light"] .slide-nav {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid var(--bg-tertiary);
+}
+
+[data-theme="light"] .pyodide-status,
+[data-theme="light"] .theme-toggle {
+    background: var(--bg-card);
+    border-color: var(--bg-tertiary);
+    box-shadow: var(--shadow-sm);
+}
+
+[data-theme="light"] .final-slide {
+    background: 
+        radial-gradient(ellipse at 50% 50%, rgba(124, 58, 237, 0.08) 0%, transparent 60%),
+        var(--bg-primary);
+}
+
+[data-theme="light"] .code-block pre[class*="language-"],
+[data-theme="light"] .code-block {
+    background: #1e293b;
+}
+
+[data-theme="light"] .code-output {
+    background: #334155;
+    color: #e2e8f0;
+}
+
+[data-theme="light"] .code-header {
+    background: #334155;
+    border-bottom-color: #475569;
+}
+
+[data-theme="light"] .code-lang {
+    color: #22d3ee;
+}
+
