@@ -1,17 +1,22 @@
 // ============================================
 // STRUCTURI DE DATE PROBABILISTICE
-// Interactive JavaScript
+// Presentation Mode JavaScript
 // ============================================
 
 // Global state
 let pyodide = null;
 let pyodideReady = false;
+let currentSlide = 0;
+let totalSlides = 0;
+let slides = [];
+
 let bloomFilter = {
     size: 32,
     numHashes: 3,
     bitArray: [],
     addedElements: []
 };
+
 let hllState = {
     p: 4,
     registers: [],
@@ -20,16 +25,156 @@ let hllState = {
 };
 
 // ============================================
+// Slide Navigation
+// ============================================
+
+function initSlides() {
+    slides = document.querySelectorAll('.slide');
+    totalSlides = slides.length;
+    
+    // Update total slides display
+    document.getElementById('totalSlides').textContent = totalSlides;
+    
+    // Create dots
+    createSlideDots();
+    
+    // Show first slide
+    goToSlide(0);
+    
+    // Setup keyboard navigation
+    document.addEventListener('keydown', handleKeyboard);
+}
+
+function createSlideDots() {
+    const dotsContainer = document.getElementById('slideDots');
+    dotsContainer.innerHTML = '';
+    
+    slides.forEach((slide, index) => {
+        const dot = document.createElement('div');
+        dot.className = 'slide-dot';
+        
+        // Add section-specific class
+        if (slide.classList.contains('bloom-section')) {
+            dot.classList.add('bloom-dot');
+        } else if (slide.classList.contains('hll-section')) {
+            dot.classList.add('hll-dot');
+        }
+        
+        dot.addEventListener('click', (e) => {
+            e.stopPropagation();
+            goToSlide(index);
+        });
+        
+        dotsContainer.appendChild(dot);
+    });
+}
+
+function goToSlide(index) {
+    if (index < 0 || index >= totalSlides) return;
+    
+    // Remove active from all slides
+    slides.forEach(slide => slide.classList.remove('active'));
+    
+    // Add active to current slide
+    slides[index].classList.add('active');
+    
+    // Update current slide
+    currentSlide = index;
+    
+    // Update UI
+    updateSlideUI();
+}
+
+function nextSlide() {
+    if (currentSlide < totalSlides - 1) {
+        goToSlide(currentSlide + 1);
+    }
+}
+
+function prevSlide() {
+    if (currentSlide > 0) {
+        goToSlide(currentSlide - 1);
+    }
+}
+
+function updateSlideUI() {
+    // Update counter
+    document.getElementById('currentSlide').textContent = currentSlide + 1;
+    
+    // Update progress bar
+    const progress = ((currentSlide + 1) / totalSlides) * 100;
+    document.getElementById('progressFill').style.width = progress + '%';
+    
+    // Update dots
+    const dots = document.querySelectorAll('.slide-dot');
+    dots.forEach((dot, index) => {
+        dot.classList.toggle('active', index === currentSlide);
+    });
+    
+    // Update nav buttons
+    const prevBtn = document.querySelector('.slide-nav-btn.prev');
+    const nextBtn = document.querySelector('.slide-nav-btn.next');
+    
+    if (prevBtn) prevBtn.disabled = currentSlide === 0;
+    if (nextBtn) nextBtn.disabled = currentSlide === totalSlides - 1;
+}
+
+function handleKeyboard(e) {
+    // Don't navigate if user is typing in an input
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+        return;
+    }
+    
+    switch (e.key) {
+        case 'ArrowRight':
+        case 'ArrowDown':
+        case ' ':
+        case 'PageDown':
+            e.preventDefault();
+            nextSlide();
+            break;
+        case 'ArrowLeft':
+        case 'ArrowUp':
+        case 'PageUp':
+            e.preventDefault();
+            prevSlide();
+            break;
+        case 'Home':
+            e.preventDefault();
+            goToSlide(0);
+            break;
+        case 'End':
+            e.preventDefault();
+            goToSlide(totalSlides - 1);
+            break;
+    }
+}
+
+
+// ============================================
 // Pyodide Setup
 // ============================================
 
-async function loadPyodide() {
+async function loadPyodideRuntime() {
     const statusDot = document.querySelector('.status-dot');
     const statusText = document.querySelector('.status-text');
     
+    // Check if loadPyodide function exists (from CDN)
+    if (typeof loadPyodide === 'undefined') {
+        console.error('Pyodide library not loaded from CDN');
+        statusDot.classList.remove('loading');
+        statusDot.style.background = 'var(--accent-danger)';
+        statusText.textContent = 'Pyodide indisponibil';
+        return;
+    }
+    
     try {
-        statusText.textContent = 'Se încarcă Python...';
-        pyodide = await loadPyodide();
+        statusText.textContent = 'Se încarcă Python (~10MB)...';
+        console.log('Starting Pyodide load...');
+        
+        pyodide = await loadPyodide({
+            indexURL: "https://cdn.jsdelivr.net/pyodide/v0.24.1/full/"
+        });
         
         statusDot.classList.remove('loading');
         statusDot.classList.add('ready');
@@ -41,7 +186,7 @@ async function loadPyodide() {
         console.error('Error loading Pyodide:', error);
         statusDot.classList.remove('loading');
         statusDot.style.background = 'var(--accent-danger)';
-        statusText.textContent = 'Eroare la încărcare';
+        statusText.textContent = 'Eroare: ' + error.message;
     }
 }
 
@@ -77,32 +222,6 @@ sys.stdout = StringIO()
     } catch (error) {
         outputElement.innerHTML = `<span style="color: var(--accent-danger);">Eroare: ${error.message}</span>`;
     }
-}
-
-// ============================================
-// Navigation
-// ============================================
-
-function setupNavigation() {
-    const nav = document.getElementById('mainNav');
-    const cover = document.getElementById('cover');
-    
-    if (!nav || !cover) return;
-    
-    const observer = new IntersectionObserver(
-        (entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    nav.classList.remove('visible');
-                } else {
-                    nav.classList.add('visible');
-                }
-            });
-        },
-        { threshold: 0.1 }
-    );
-    
-    observer.observe(cover);
 }
 
 // ============================================
@@ -144,7 +263,6 @@ function addToBloom() {
     
     const hashes = getBloomHashes(item);
     
-    // Animate the bits
     hashes.forEach(pos => {
         bloomFilter.bitArray[pos] = 1;
     });
@@ -208,14 +326,12 @@ function renderBloomFilter(highlightPositions = [], isCheck = false) {
         
         if (highlightPositions && highlightPositions.includes(index)) {
             div.classList.add('highlight');
-            // Remove highlight after animation
             setTimeout(() => div.classList.remove('highlight'), 1000);
         }
         
         container.appendChild(div);
     });
     
-    // Update hash indicators
     const hashContainer = document.getElementById('hashIndicators');
     if (hashContainer && highlightPositions && highlightPositions.length > 0) {
         hashContainer.innerHTML = highlightPositions.map((pos, i) => 
@@ -259,13 +375,12 @@ function initHLL() {
 }
 
 function hllHash(item) {
-    // Simple 32-bit hash
     let hash = 0;
     const str = String(item);
     for (let i = 0; i < str.length; i++) {
         hash = ((hash << 5) - hash + str.charCodeAt(i)) | 0;
     }
-    return hash >>> 0; // Convert to unsigned
+    return hash >>> 0;
 }
 
 function countLeadingZeros(value, bits) {
@@ -282,30 +397,23 @@ function countLeadingZeros(value, bits) {
 function hllAdd(item) {
     const hash = hllHash(item);
     const p = hllState.p;
-    const m = hllState.registers.length;
     
-    // First p bits = register index
     const index = hash >>> (32 - p);
-    
-    // Remaining bits for leading zeros count
     const remaining = hash & ((1 << (32 - p)) - 1);
     const leadingZeros = countLeadingZeros(remaining, 32 - p) + 1;
     
-    // Update register with max
     hllState.registers[index] = Math.max(hllState.registers[index], leadingZeros);
 }
 
 function hllEstimate() {
     const m = hllState.registers.length;
     
-    // Alpha constant
     let alpha;
     if (m === 16) alpha = 0.673;
     else if (m === 32) alpha = 0.697;
     else if (m === 64) alpha = 0.709;
     else alpha = 0.7213 / (1 + 1.079 / m);
     
-    // Harmonic mean
     let Z = 0;
     for (let i = 0; i < m; i++) {
         Z += Math.pow(2, -hllState.registers[i]);
@@ -313,7 +421,6 @@ function hllEstimate() {
     
     let E = alpha * m * m / Z;
     
-    // Small range correction
     if (E <= 2.5 * m) {
         const V = hllState.registers.filter(r => r === 0).length;
         if (V > 0) {
@@ -326,7 +433,6 @@ function hllEstimate() {
 
 function addRandomElements(count) {
     for (let i = 0; i < count; i++) {
-        // Generate random element with some duplicates
         const id = Math.floor(Math.random() * (hllState.totalAdded + count * 2));
         const element = `element_${id}`;
         
@@ -343,18 +449,21 @@ function resetHLL() {
 }
 
 function renderHLL() {
-    // Update stats
-    document.getElementById('hllTotalAdded').textContent = hllState.totalAdded.toLocaleString();
-    document.getElementById('hllActualUnique').textContent = hllState.uniqueSet.size.toLocaleString();
+    const totalEl = document.getElementById('hllTotalAdded');
+    const uniqueEl = document.getElementById('hllActualUnique');
+    const estimateEl = document.getElementById('hllEstimate');
+    const errorEl = document.getElementById('hllError');
+    
+    if (totalEl) totalEl.textContent = hllState.totalAdded.toLocaleString();
+    if (uniqueEl) uniqueEl.textContent = hllState.uniqueSet.size.toLocaleString();
     
     const estimate = hllEstimate();
-    document.getElementById('hllEstimate').textContent = estimate.toLocaleString();
+    if (estimateEl) estimateEl.textContent = estimate.toLocaleString();
     
     const actual = hllState.uniqueSet.size;
     const error = actual === 0 ? 0 : Math.abs(estimate - actual) / actual * 100;
-    document.getElementById('hllError').textContent = error.toFixed(2) + '%';
+    if (errorEl) errorEl.textContent = error.toFixed(2) + '%';
     
-    // Update registers visualization
     const container = document.getElementById('hllRegisters');
     if (!container) return;
     
@@ -368,152 +477,38 @@ function renderHLL() {
             <span class="register-value">${value}</span>
         `;
         
-        // Color based on value
         if (value > 0) {
             const intensity = Math.min(value / 10, 1);
-            div.style.background = `rgba(6, 182, 212, ${0.1 + intensity * 0.3})`;
+            div.style.background = `rgba(245, 158, 11, ${0.1 + intensity * 0.3})`;
         }
         
         container.appendChild(div);
     });
 }
 
-// ============================================
-// Smooth Scroll for Anchor Links
-// ============================================
-
-function setupSmoothScroll() {
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                target.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-            }
-        });
-    });
-}
-
-// ============================================
-// Code Syntax Highlighting (Simple)
-// ============================================
-
-function highlightCode() {
-    document.querySelectorAll('.code-block code').forEach(block => {
-        let html = block.innerHTML;
-        
-        // Keywords
-        const keywords = ['def', 'class', 'return', 'if', 'else', 'elif', 'for', 'while', 'in', 'import', 'from', 'as', 'True', 'False', 'None', 'and', 'or', 'not', 'self', 'print', 'range', 'len', 'int', 'str', 'list', 'dict', 'set', 'sum', 'all', 'any', 'abs', 'round', 'max', 'min'];
-        
-        keywords.forEach(kw => {
-            const regex = new RegExp(`\\b(${kw})\\b`, 'g');
-            html = html.replace(regex, `<span style="color: var(--accent-secondary);">$1</span>`);
-        });
-        
-        // Strings
-        html = html.replace(/(["'`])(?:(?!\1)[^\\]|\\.)*\1/g, '<span style="color: var(--accent-success);">$&</span>');
-        
-        // Comments
-        html = html.replace(/(#.*)$/gm, '<span style="color: var(--text-muted);">$1</span>');
-        
-        // Numbers
-        html = html.replace(/\b(\d+\.?\d*)\b/g, '<span style="color: var(--accent-tertiary);">$1</span>');
-        
-        // Functions
-        html = html.replace(/\b([a-zA-Z_]\w*)\s*\(/g, '<span style="color: var(--accent-primary);">$1</span>(');
-        
-        block.innerHTML = html;
-    });
-}
-
-// ============================================
-// Animation on Scroll
-// ============================================
-
-function setupScrollAnimations() {
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
-    
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('animate-in');
-            }
-        });
-    }, observerOptions);
-    
-    document.querySelectorAll('.section, .theory-block, .interactive-demo, .code-block, .app-card').forEach(el => {
-        el.style.opacity = '0';
-        el.style.transform = 'translateY(20px)';
-        el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-        observer.observe(el);
-    });
-}
-
-// Add animation class
-document.addEventListener('DOMContentLoaded', () => {
-    const style = document.createElement('style');
-    style.textContent = `
-        .animate-in {
-            opacity: 1 !important;
-            transform: translateY(0) !important;
-        }
-    `;
-    document.head.appendChild(style);
-});
-
-// ============================================
-// Keyboard Shortcuts
-// ============================================
-
-function setupKeyboardShortcuts() {
-    document.addEventListener('keydown', (e) => {
-        // Enter in bloom input
-        if (e.target.id === 'bloomInput') {
-            if (e.key === 'Enter') {
-                if (e.shiftKey) {
-                    checkBloom();
-                } else {
-                    addToBloom();
-                }
-            }
-        }
-    });
-}
+// Syntax highlighting removed - was causing display issues
 
 // ============================================
 // Initialize
 // ============================================
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Load Pyodide
-    loadPyodide();
+    // Initialize slides
+    initSlides();
     
-    // Setup navigation
-    setupNavigation();
+    // Load Pyodide
+    loadPyodideRuntime();
     
     // Initialize interactive demos
     initBloomFilter();
     initHLL();
     
-    // Setup smooth scroll
-    setupSmoothScroll();
+    // Apply syntax highlighting with Prism.js
+    if (typeof Prism !== 'undefined') {
+        Prism.highlightAll();
+    }
     
-    // Highlight code
-    highlightCode();
-    
-    // Setup scroll animations
-    setupScrollAnimations();
-    
-    // Setup keyboard shortcuts
-    setupKeyboardShortcuts();
-    
-    console.log('Structuri de Date Probabilistice - Loaded');
+    console.log('Presentation Mode Loaded - Use arrow keys or buttons to navigate');
 });
 
 // Make functions globally available
@@ -523,4 +518,6 @@ window.checkBloom = checkBloom;
 window.resetBloom = resetBloom;
 window.addRandomElements = addRandomElements;
 window.resetHLL = resetHLL;
-
+window.nextSlide = nextSlide;
+window.prevSlide = prevSlide;
+window.goToSlide = goToSlide;
