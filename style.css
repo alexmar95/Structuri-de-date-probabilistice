@@ -3927,6 +3927,32 @@ td.neutral {
     margin-top: var(--space-sm);
 }
 
+/* False Positive / False Negative Explanation */
+.fp-fn-explanation {
+    display: flex;
+    gap: var(--space-lg);
+    margin: var(--space-lg) 0;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.fp-fn-item {
+    padding: var(--space-sm) var(--space-lg);
+    border-radius: var(--radius-md);
+    font-size: 0.85rem;
+    color: var(--text-primary);
+}
+
+.fp-fn-item.fp {
+    background: rgba(245, 158, 11, 0.1);
+    border: 1px solid var(--accent-tertiary);
+}
+
+.fp-fn-item.fn {
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid var(--accent-success);
+}
+
 /* ============================================
    LogLog / SuperLogLog / HyperLogLog Slides
    ============================================ */
