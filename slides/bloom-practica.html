@@ -1,0 +1,47 @@
+<div class="slide-content">
+    <div class="slide-header">
+        <span class="slide-chapter">01 • Bloom Filters</span>
+        <h2>🔧 În Practică: Funcțiile Hash</h2>
+    </div>
+    <div class="slide-body">
+        <div class="problem-recap">
+            <h4>❓ De ce NU folosim k funcții hash independente?</h4>
+            <p>Teoria cere <code>k</code> funcții hash <em>independente</em>, dar în practică acest lucru e problematic.</p>
+        </div>
+
+        <div class="problem-list" style="margin-bottom: var(--space-xl);">
+            <div class="problem-item">
+                <span class="problem-icon">⏱️</span>
+                <span>Funcțiile hash criptografice (SHA-256, MD5) sunt <strong>costisitoare computațional</strong></span>
+            </div>
+            <div class="problem-item">
+                <span class="problem-icon">🔗</span>
+                <span>E dificil să găsești <strong>k funcții cu adevărat independente</strong> - corelațiile subtile pot afecta FP rate</span>
+            </div>
+            <div class="problem-item">
+                <span class="problem-icon">💾</span>
+                <span>Fiecare funcție hash poate necesita <strong>seed/configurație diferită</strong></span>
+            </div>
+        </div>
+
+        <div class="solution-box">
+            <h4>✨ Soluția: Kirsch–Mitzenmacher Optimization (2006)</h4>
+            <p>Cu doar <strong>2 funcții hash</strong> putem simula <strong>k funcții hash</strong>!</p>
+            <div class="formula-box hll" style="margin-top: var(--space-md);">
+                <div class="formula-content">
+                    <div class="formula-main">g<sub>i</sub>(x) = h₁(x) + i × h₂(x) mod m</div>
+                    <p class="formula-desc">unde i = 0, 1, 2, ..., k-1</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="practical-note" style="margin-top: var(--space-lg);">
+            <span class="note-icon">💡</span>
+            <div>
+                <strong>Demonstrat matematic:</strong> Această optimizare nu crește rata de false positive 
+                față de k funcții independente. E folosită în producție de <em>Google, Facebook, Redis</em>.
+            </div>
+        </div>
+    </div>
+</div>
+

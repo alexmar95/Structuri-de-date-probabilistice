@@ -24,21 +24,46 @@
             </div>
         </div>
         <div class="visual-example">
-            <div class="example-header">Exemplu vizual cu k=3 hash-uri:</div>
+            <div class="example-header">Exemplu vizual cu k=3 hash-uri într-un vector de m biți:</div>
             <div class="bit-array-example">
-                <span class="bit-ex">0</span>
-                <span class="bit-ex active">1</span>
-                <span class="bit-ex">0</span>
-                <span class="bit-ex active">1</span>
+                <span class="bit-ellipsis">...</span>
                 <span class="bit-ex">0</span>
                 <span class="bit-ex">0</span>
                 <span class="bit-ex active">1</span>
                 <span class="bit-ex">0</span>
+                <span class="bit-ex">0</span>
+                <span class="bit-ex active">1</span>
+                <span class="bit-ex">0</span>
+                <span class="bit-ex">0</span>
+                <span class="bit-ex active">1</span>
+                <span class="bit-ex">0</span>
+                <span class="bit-ex">0</span>
+                <span class="bit-ellipsis">...</span>
             </div>
-            <div class="hash-arrows">
-                <span style="left: 15%">h₁</span>
-                <span style="left: 40%">h₂</span>
-                <span style="left: 78%">h₃</span>
+            <div class="hash-arrows" style="max-width: 500px;">
+                <span style="left: 22%">h₁</span>
+                <span style="left: 48%">h₂</span>
+                <span style="left: 74%">h₃</span>
+            </div>
+            <div class="array-brace">
+                <svg viewBox="0 0 400 25" style="width: 100%; max-width: 500px; height: 25px; margin-top: var(--space-xs);">
+                    <path d="M 10 5 L 10 15 Q 10 20, 15 20 L 185 20 Q 200 20, 200 25 Q 200 20, 215 20 L 385 20 Q 390 20, 390 15 L 390 5" 
+                          fill="none" stroke="var(--text-muted)" stroke-width="1.5"/>
+                </svg>
+                <div style="font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-muted); text-align: center;">
+                    <strong style="color: var(--accent-primary);">m</strong> biți → memorie = m / 8 bytes
+                </div>
+            </div>
+            <div class="memory-hint" style="display: flex; gap: var(--space-lg); justify-content: center; margin-top: var(--space-md); font-size: 0.8rem;">
+                <span style="color: var(--text-muted);">
+                    <strong style="color: var(--accent-tertiary);">m = 10.000</strong> → ~1.2 KB
+                </span>
+                <span style="color: var(--text-muted);">
+                    <strong style="color: var(--accent-tertiary);">m = 1.000.000</strong> → ~122 KB
+                </span>
+                <span style="color: var(--text-muted);">
+                    <strong style="color: var(--accent-success);">m = 100.000.000</strong> → ~12 MB
+                </span>
             </div>
         </div>
     </div>

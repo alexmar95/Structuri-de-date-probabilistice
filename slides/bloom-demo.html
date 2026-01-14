@@ -4,21 +4,34 @@
         <h2>🎮 Demo Interactiv</h2>
     </div>
     <div class="slide-body">
-        <div class="interactive-demo">
-            <div class="demo-controls">
+        <div class="interactive-demo" style="padding: var(--space-md);">
+            <div class="demo-controls" style="margin-bottom: var(--space-md);">
                 <input type="text" id="bloomInput" placeholder="Introdu un cuvânt..." class="demo-input">
                 <button onclick="addToBloom()" class="demo-btn primary">Adaugă</button>
                 <button onclick="checkBloom()" class="demo-btn secondary">Verifică</button>
                 <button onclick="resetBloom()" class="demo-btn danger">Reset</button>
             </div>
-            <div class="bloom-visualization">
-                <div class="bit-array" id="bloomBitArray"></div>
-                <div class="hash-indicators" id="hashIndicators"></div>
+            
+            <!-- Bit Array Visualization -->
+            <div class="bloom-bit-display">
+                <div class="bit-array-header">
+                    <span>Array de <strong>m = 32</strong> biți</span>
+                    <span class="bits-set-count">Biți setați: <strong id="bitsSetCount">0</strong> / 32</span>
+                </div>
+                <div class="bit-array-visual" id="bloomBitArray"></div>
+                <div class="bit-array-indices" id="bloomBitIndices"></div>
             </div>
+            
+            <!-- Hash Indicators -->
+            <div class="hash-result-display" id="hashIndicators" style="min-height: 50px;"></div>
+            
+            <!-- Output Message -->
             <div class="demo-output" id="bloomOutput">
                 <p>Adaugă cuvinte pentru a vedea cum funcționează Bloom Filter-ul.</p>
             </div>
-            <div class="added-elements">
+            
+            <!-- Added Elements List -->
+            <div class="added-elements" style="font-size: 0.85rem;">
                 <strong>Elemente adăugate:</strong>
                 <span id="addedList">Niciun element încă</span>
             </div>

@@ -1,0 +1,84 @@
+<div class="slide-content">
+    <div class="slide-header">
+        <span class="slide-chapter">01 • Bloom Filters</span>
+        <h2>📈 Ce facem când se umple?</h2>
+    </div>
+    <div class="slide-body">
+        <div class="problem-recap">
+            <h4>⚠️ Problema: Supraîncărcarea Bloom Filter-ului</h4>
+            <p>Dacă adăugăm <strong>mai multe elemente decât am anticipat</strong>, rata de false positive crește exponențial!</p>
+        </div>
+
+        <div class="scale-comparison compact" style="margin-bottom: var(--space-lg);">
+            <div class="scale-item">
+                <div class="scale-number">50%</div>
+                <div class="scale-label">biți = 1</div>
+            </div>
+            <div class="scale-arrow">→</div>
+            <div class="scale-item">
+                <div class="scale-number">~3%</div>
+                <div class="scale-label">FP rate</div>
+            </div>
+            <div class="scale-arrow">→</div>
+            <div class="scale-item problem">
+                <div class="scale-number">90%</div>
+                <div class="scale-label">biți = 1</div>
+            </div>
+            <div class="scale-arrow">→</div>
+            <div class="scale-item problem">
+                <div class="scale-number">~50%</div>
+                <div class="scale-label">FP rate!</div>
+            </div>
+        </div>
+
+        <div class="comparison-boxes" style="margin-bottom: var(--space-lg);">
+            <div class="compare-box bloom-box" style="max-width: 280px;">
+                <h4>📊 Cum detectăm?</h4>
+                <p class="compare-note" style="text-align: left; font-size: 0.9rem; color: var(--text-primary);">
+                    Monitorizăm <strong>fill ratio</strong>:<br>
+                    <code style="font-size: 0.85rem;">biți_activi / m</code><br><br>
+                    Sau estimăm FP actual:<br>
+                    <code style="font-size: 0.85rem;">(1 - e^(-kn/m))^k</code>
+                </p>
+            </div>
+            <div class="compare-box hll-box" style="max-width: 280px; border-color: var(--accent-danger);">
+                <h4>❌ De ce nu mărim m?</h4>
+                <p class="compare-note" style="text-align: left; font-size: 0.9rem; color: var(--text-primary);">
+                    <strong>Nu stocăm elementele!</strong><br><br>
+                    Pentru rehash ar trebui să știm ce am adăugat - dar exact asta evităm pentru a economisi memorie.
+                </p>
+            </div>
+        </div>
+
+        <div class="solution-box">
+            <h4>✨ Soluția: Scalable Bloom Filters</h4>
+            <p>Când filter-ul curent atinge pragul, creăm unul nou și le folosim în <strong>cascadă inversă</strong>:</p>
+            <div class="register-algorithm" style="margin-top: var(--space-md);">
+                <div class="reg-step">
+                    <div class="reg-num">1</div>
+                    <div class="reg-content">
+                        <strong>Inserare:</strong> Adaugă mereu în <em>cel mai nou</em> filter (ultimul creat)
+                    </div>
+                </div>
+                <div class="reg-step">
+                    <div class="reg-num">2</div>
+                    <div class="reg-content">
+                        <strong>Căutare:</strong> Verifică de la <em>cel mai nou</em> spre <em>cel mai vechi</em> — oprește la primul "da"
+                    </div>
+                </div>
+                <div class="reg-step">
+                    <div class="reg-num">3</div>
+                    <div class="reg-content">
+                        <strong>Acuratețe:</strong> Cu fiecare filter nou, <em>acuratețea scade</em> (FP crește).<br>
+                        <span style="font-size: 0.9em; opacity: 0.9;">
+                            E mai ușor să gândim în termeni de <strong>True Negative</strong>: <code>P(TN) = ∏(1-Pᵢ)</code><br>
+                            Acuratețea e <em>produsul</em> acuratetilor → scade cu fiecare filter!<br>
+                            Ex: 3 filtre cu 99% acuratețe → 0.99³ ≈ <strong>97%</strong> acuratețe totală.
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

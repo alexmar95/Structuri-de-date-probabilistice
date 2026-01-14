@@ -67,19 +67,19 @@ const SLIDES_CONFIG = [
         title: 'Demo Interactiv Bloom Filter'
     },
     {
-        file: 'bloom-python.html',
-        classes: ['bloom-section'],
-        title: 'Implementare Python Bloom Filter'
-    },
-    {
         file: 'bloom-math.html',
         classes: ['bloom-section'],
         title: 'Analiza Matematică'
     },
     {
-        file: 'bloom-calcule.html',
+        file: 'bloom-practica.html',
         classes: ['bloom-section'],
-        title: 'Calcule Practice'
+        title: 'În Practică: Funcțiile Hash'
+    },
+    {
+        file: 'bloom-scalare.html',
+        classes: ['bloom-section'],
+        title: 'Ce facem când se umple?'
     },
     {
         file: 'bloom-aplicatii.html',

@@ -4,41 +4,90 @@
         <h2>📐 Analiza Matematică</h2>
     </div>
     <div class="slide-body">
-        <div class="formula-grid">
-            <div class="formula-card">
-                <h4>Probabilitatea de False Positive</h4>
-                <div class="formula">
-                    <div class="math-formula">
-                        P(FP) ≈ (1 - e<sup>-kn/m</sup>)<sup>k</sup>
-                    </div>
+        <!-- Compact Formula Row -->
+        <div style="display: flex; gap: var(--space-md); margin-bottom: var(--space-lg); flex-wrap: wrap; justify-content: center;">
+            <div class="formula-card" style="padding: var(--space-md); flex: 1; min-width: 200px;">
+                <h4 style="font-size: 0.8rem; margin-bottom: var(--space-xs);">Probabilitatea FP</h4>
+                <div class="math-formula" style="font-size: 0.95rem; padding: var(--space-sm);">
+                    P(FP) ≈ (1 - e<sup>-kn/m</sup>)<sup>k</sup>
                 </div>
-                <p class="formula-desc">
-                    <code>n</code> = elemente, <code>m</code> = biți, <code>k</code> = funcții hash
-                </p>
             </div>
-            <div class="formula-card">
-                <h4>Numărul Optim de Funcții Hash</h4>
-                <div class="formula">
-                    <div class="math-formula">
-                        k<sub>optim</sub> = (m/n) × ln(2)
-                    </div>
+            <div class="formula-card" style="padding: var(--space-md); flex: 1; min-width: 200px;">
+                <h4 style="font-size: 0.8rem; margin-bottom: var(--space-xs);">k Optim</h4>
+                <div class="math-formula" style="font-size: 0.95rem; padding: var(--space-sm);">
+                    k<sub>opt</sub> = (m/n) × ln(2)
                 </div>
-                <p class="formula-desc">
-                    ≈ 0.693 × (m/n)
-                </p>
             </div>
-            <div class="formula-card">
-                <h4>Dimensiune Optimă pentru Probabilitate Țintă</h4>
-                <div class="formula">
-                    <div class="math-formula">
-                        m = -n × ln(p) / (ln(2))²
+            <div class="formula-card" style="padding: var(--space-md); flex: 1; min-width: 200px;">
+                <h4 style="font-size: 0.8rem; margin-bottom: var(--space-xs);">m pentru target FP</h4>
+                <div class="math-formula" style="font-size: 0.95rem; padding: var(--space-sm);">
+                    m = -n × ln(p) / ln²(2)
+                </div>
+            </div>
+        </div>
+
+        <!-- Interactive Calculator - Compact -->
+        <div class="interactive-demo" id="bloomMathDemo" style="padding: var(--space-md);">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-lg); align-items: start;">
+                <!-- Left: Controls + Stats -->
+                <div>
+                    <h4 style="font-size: 0.9rem; margin-bottom: var(--space-sm); color: var(--accent-primary);">🎛️ Parametri</h4>
+                    <div style="display: flex; flex-direction: column; gap: var(--space-sm);">
+                        <div style="display: flex; align-items: center; gap: var(--space-sm);">
+                            <label style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); min-width: 80px;">
+                                m (biți): <strong id="mValue">1000</strong>
+                            </label>
+                            <input type="range" id="mSlider" min="100" max="10000" value="1000" step="100" 
+                                   style="flex: 1;" oninput="updateBloomMathCalc()">
+                        </div>
+                        <div style="display: flex; align-items: center; gap: var(--space-sm);">
+                            <label style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); min-width: 80px;">
+                                k (hash): <strong id="kValue">3</strong>
+                            </label>
+                            <input type="range" id="kSlider" min="1" max="15" value="3" 
+                                   style="flex: 1;" oninput="updateBloomMathCalc()">
+                        </div>
+                        <div style="display: flex; align-items: center; gap: var(--space-sm);">
+                            <label style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); min-width: 80px;">
+                                n (elem): <strong id="nValue">100</strong>
+                            </label>
+                            <input type="range" id="nSlider" min="10" max="2000" value="100" step="10" 
+                                   style="flex: 1;" oninput="updateBloomMathCalc()">
+                        </div>
+                    </div>
+                    
+                    <!-- Stats Row -->
+                    <div style="display: flex; gap: var(--space-sm); margin-top: var(--space-md);">
+                        <div class="stat-box" style="flex: 1; padding: var(--space-sm);">
+                            <span class="stat-label" style="font-size: 0.65rem;">FP Rate</span>
+                            <span class="stat-value" id="fpRate" style="font-size: 1.1rem; color: var(--accent-primary);">0.00%</span>
+                        </div>
+                        <div class="stat-box" style="flex: 1; padding: var(--space-sm);">
+                            <span class="stat-label" style="font-size: 0.65rem;">Fill Ratio</span>
+                            <span class="stat-value" id="fillRatio" style="font-size: 1.1rem;">0%</span>
+                        </div>
+                        <div class="stat-box" style="flex: 1; padding: var(--space-sm);">
+                            <span class="stat-label" style="font-size: 0.65rem;">k optim</span>
+                            <span class="stat-value" id="kOptimal" style="font-size: 1.1rem;">-</span>
+                        </div>
                     </div>
                 </div>
-                <p class="formula-desc">
-                    <code>p</code> = probabilitatea de FP dorită
-                </p>
+
+                <!-- Right: Chart -->
+                <div style="background: var(--bg-secondary); border-radius: var(--radius-md); padding: var(--space-md);">
+                    <div style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-muted); margin-bottom: var(--space-xs);">
+                        FP% pe măsură ce crește n (0 → 2000)
+                    </div>
+                    <div id="fpChart" style="display: flex; align-items: flex-end; height: 80px; gap: 1px;">
+                        <!-- Bars generated by JS -->
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-muted); margin-top: 2px;">
+                        <span>0</span>
+                        <span>n curent: <span id="chartCurrentN" style="color: var(--accent-primary);">100</span></span>
+                        <span id="chartMaxN">2000</span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
-

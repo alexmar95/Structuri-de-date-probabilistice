@@ -494,14 +494,27 @@ function addToBloom() {
     
     const hashes = getBloomHashes(item);
     
+    // Check which bits were already set
+    const alreadySet = hashes.filter(pos => bloomFilter.bitArray[pos] === 1);
+    const newlySet = hashes.filter(pos => bloomFilter.bitArray[pos] === 0);
+    
     hashes.forEach(pos => {
         bloomFilter.bitArray[pos] = 1;
     });
     
     bloomFilter.addedElements.push(item);
     
-    renderBloomFilter(hashes);
-    showBloomOutput(`✓ "${item}" adăugat. Hash-uri: [${hashes.join(', ')}]`, 'success');
+    renderBloomFilter(hashes, null);
+    renderHashExplanation(item, hashes, false, null);
+    
+    let msg = `✓ "${item}" adăugat în Bloom Filter.`;
+    if (newlySet.length > 0) {
+        msg += ` Biți noi setați: [${newlySet.join(', ')}].`;
+    }
+    if (alreadySet.length > 0) {
+        msg += ` Biți deja 1: [${alreadySet.join(', ')}].`;
+    }
+    showBloomOutput(msg, 'success');
     updateAddedList();
     
     input.value = '';
@@ -520,55 +533,127 @@ function checkBloom() {
     const hashes = getBloomHashes(item);
     const exists = hashes.every(pos => bloomFilter.bitArray[pos] === 1);
     const actuallyExists = bloomFilter.addedElements.includes(item);
+    const missingBits = hashes.filter(pos => bloomFilter.bitArray[pos] === 0);
     
-    renderBloomFilter(hashes, true);
+    renderBloomFilter(hashes, exists);
+    renderHashExplanation(item, hashes, true, exists);
     
     if (exists) {
         if (actuallyExists) {
-            showBloomOutput(`✓ "${item}" PROBABIL există în filter (și chiar a fost adăugat).\nPozițiile verificate: [${hashes.join(', ')}]`, 'success');
+            showBloomOutput(`✓ "${item}" PROBABIL există (și chiar a fost adăugat). Toți cei ${hashes.length} biți verificați sunt 1.`, 'success');
         } else {
-            showBloomOutput(`⚠ "${item}" PROBABIL există în filter (FALSE POSITIVE! - nu a fost adăugat efectiv).\nPozițiile verificate: [${hashes.join(', ')}]`, 'warning');
+            showBloomOutput(`⚠ FALSE POSITIVE! "${item}" pare să existe, dar NU a fost adăugat. Biții [${hashes.join(', ')}] au fost setați de alte elemente.`, 'warning');
         }
     } else {
-        showBloomOutput(`✗ "${item}" SIGUR NU există în filter.\nPozițiile verificate: [${hashes.join(', ')}] - cel puțin una e 0.`, 'error');
+        showBloomOutput(`✗ "${item}" SIGUR NU există. Bit${missingBits.length > 1 ? 'ții' : 'ul'} [${missingBits.join(', ')}] ${missingBits.length > 1 ? 'sunt' : 'este'} 0.`, 'error');
     }
 }
 
 function resetBloom() {
     initBloomFilter();
-    showBloomOutput('Bloom Filter resetat.', '');
+    showBloomOutput('Bloom Filter resetat. Adaugă cuvinte pentru a vedea cum funcționează.', '');
     updateAddedList();
+    
+    // Clear hash explanation
+    const hashContainer = document.getElementById('hashIndicators');
+    if (hashContainer) hashContainer.innerHTML = '';
 }
 
-function renderBloomFilter(highlightPositions = [], isCheck = false) {
+function renderBloomFilter(highlightPositions = [], checkResult = null) {
     const container = document.getElementById('bloomBitArray');
+    const indicesContainer = document.getElementById('bloomBitIndices');
+    const bitsSetCount = document.getElementById('bitsSetCount');
     if (!container) return;
     
     container.innerHTML = '';
+    if (indicesContainer) indicesContainer.innerHTML = '';
+    
+    // Count bits set
+    const setCount = bloomFilter.bitArray.filter(b => b === 1).length;
+    if (bitsSetCount) bitsSetCount.textContent = setCount;
     
     bloomFilter.bitArray.forEach((bit, index) => {
+        // Bit cell
         const div = document.createElement('div');
-        div.className = 'bit';
+        div.className = 'bit-cell';
         div.textContent = bit;
         
         if (bit === 1) {
-            div.classList.add('active');
+            div.classList.add('set');
         }
         
+        // Highlight logic
         if (highlightPositions && highlightPositions.includes(index)) {
-            div.classList.add('highlight');
-            setTimeout(() => div.classList.remove('highlight'), 1000);
+            if (checkResult !== null) {
+                // Check mode: show which bits match/don't match
+                if (bit === 1) {
+                    div.classList.add('check-hit');
+                } else {
+                    div.classList.add('check-miss');
+                }
+            } else {
+                // Add mode: highlight new positions
+                div.classList.add('adding');
+            }
         }
         
         container.appendChild(div);
+        
+        // Index label
+        if (indicesContainer) {
+            const idxSpan = document.createElement('span');
+            idxSpan.className = 'bit-index';
+            idxSpan.textContent = index;
+            if (highlightPositions && highlightPositions.includes(index)) {
+                idxSpan.classList.add('highlight');
+            }
+            indicesContainer.appendChild(idxSpan);
+        }
+    });
+}
+
+function renderHashExplanation(item, hashes, isCheck = false, checkResult = null) {
+    const hashContainer = document.getElementById('hashIndicators');
+    if (!hashContainer) return;
+    
+    if (!hashes || hashes.length === 0) {
+        hashContainer.innerHTML = '';
+        return;
+    }
+    
+    let html = `<div class="hash-explanation">`;
+    html += `<div class="hash-title">${isCheck ? 'Verificare' : 'Inserare'}: "<strong>${item}</strong>"</div>`;
+    html += `<div class="hash-steps">`;
+    
+    hashes.forEach((pos, i) => {
+        const bitValue = bloomFilter.bitArray[pos];
+        const statusClass = isCheck ? (bitValue === 1 ? 'hit' : 'miss') : 'add';
+        const statusIcon = isCheck ? (bitValue === 1 ? '✓' : '✗') : '→';
+        html += `
+            <div class="hash-step ${statusClass}">
+                <span class="hash-func">h<sub>${i+1}</sub>("${item}")</span>
+                <span class="hash-arrow">=</span>
+                <span class="hash-pos">${pos}</span>
+                <span class="hash-status">${statusIcon} bit[${pos}] = ${bitValue}</span>
+            </div>
+        `;
     });
     
-    const hashContainer = document.getElementById('hashIndicators');
-    if (hashContainer && highlightPositions && highlightPositions.length > 0) {
-        hashContainer.innerHTML = highlightPositions.map((pos, i) => 
-            `<span class="hash-indicator">h${i+1}() → ${pos}</span>`
-        ).join('');
+    html += `</div>`;
+    
+    // Conclusion
+    if (isCheck) {
+        const allSet = hashes.every(pos => bloomFilter.bitArray[pos] === 1);
+        if (allSet) {
+            html += `<div class="hash-conclusion hit">Toți biții sunt 1 → PROBABIL există</div>`;
+        } else {
+            const missingBits = hashes.filter(pos => bloomFilter.bitArray[pos] === 0);
+            html += `<div class="hash-conclusion miss">Bit${missingBits.length > 1 ? 'ții' : 'ul'} [${missingBits.join(', ')}] ${missingBits.length > 1 ? 'sunt' : 'este'} 0 → SIGUR NU există</div>`;
+        }
     }
+    
+    html += `</div>`;
+    hashContainer.innerHTML = html;
 }
 
 function showBloomOutput(message, type) {
@@ -718,6 +803,97 @@ function renderHLL() {
 }
 
 // ============================================
+// Bloom Filter Math Calculator
+// ============================================
+
+function initBloomMathCalc() {
+    const mSlider = document.getElementById('mSlider');
+    const kSlider = document.getElementById('kSlider');
+    const nSlider = document.getElementById('nSlider');
+    
+    if (!mSlider || !kSlider || !nSlider) return;
+    
+    // Add event listeners
+    mSlider.addEventListener('input', updateBloomMathCalc);
+    kSlider.addEventListener('input', updateBloomMathCalc);
+    nSlider.addEventListener('input', updateBloomMathCalc);
+    
+    // Initial calculation
+    updateBloomMathCalc();
+}
+
+function updateBloomMathCalc() {
+    const mSlider = document.getElementById('mSlider');
+    const kSlider = document.getElementById('kSlider');
+    const nSlider = document.getElementById('nSlider');
+    
+    if (!mSlider || !kSlider || !nSlider) return;
+    
+    const m = parseInt(mSlider.value);
+    const k = parseInt(kSlider.value);
+    const n = parseInt(nSlider.value);
+    
+    // Update displayed values
+    const mValueEl = document.getElementById('mValue');
+    const kValueEl = document.getElementById('kValue');
+    const nValueEl = document.getElementById('nValue');
+    
+    if (mValueEl) mValueEl.textContent = m.toLocaleString();
+    if (kValueEl) kValueEl.textContent = k;
+    if (nValueEl) nValueEl.textContent = n;
+    
+    // Calculate FP rate: (1 - e^(-kn/m))^k
+    const fp = Math.pow(1 - Math.exp(-k * n / m), k);
+    const fpPercent = (fp * 100).toFixed(2);
+    
+    // Calculate fill ratio: 1 - e^(-kn/m)
+    const fillRatio = (1 - Math.exp(-k * n / m)) * 100;
+    
+    // Calculate optimal k
+    const kOpt = (m / n) * Math.LN2;
+    
+    // Update stats
+    const fpEl = document.getElementById('fpRate');
+    if (fpEl) {
+        fpEl.textContent = fpPercent + '%';
+        fpEl.style.color = fp > 0.1 ? 'var(--accent-danger)' : fp > 0.05 ? 'var(--accent-tertiary)' : 'var(--accent-success)';
+    }
+    
+    const fillEl = document.getElementById('fillRatio');
+    if (fillEl) fillEl.textContent = fillRatio.toFixed(1) + '%';
+    
+    const kOptEl = document.getElementById('kOptimal');
+    if (kOptEl) kOptEl.textContent = kOpt.toFixed(1);
+    
+    // Generate chart - show FP rate as n grows from 0 to max slider value
+    const chart = document.getElementById('fpChart');
+    if (!chart) return;
+    
+    const maxN = parseInt(nSlider.max);
+    const bars = 30;
+    let html = '';
+    
+    for (let i = 0; i <= bars; i++) {
+        const ni = Math.round((i / bars) * maxN);
+        const fpi = Math.pow(1 - Math.exp(-k * ni / m), k);
+        const height = Math.min(fpi * 100, 100);
+        const isCurrentN = Math.abs(ni - n) < maxN / bars;
+        const color = isCurrentN ? 'var(--accent-primary)' : 
+                     fpi > 0.1 ? 'var(--accent-danger)' : 
+                     fpi > 0.05 ? 'var(--accent-tertiary)' : 'var(--accent-success)';
+        html += `<div style="flex: 1; background: ${color}; height: ${height}%; min-height: 2px; border-radius: 2px 2px 0 0; opacity: ${isCurrentN ? 1 : 0.6};"></div>`;
+    }
+    
+    chart.innerHTML = html;
+    
+    const chartMaxEl = document.getElementById('chartMaxN');
+    if (chartMaxEl) chartMaxEl.textContent = maxN.toLocaleString();
+    
+    const chartCurrentEl = document.getElementById('chartCurrentN');
+    if (chartCurrentEl) chartCurrentEl.textContent = n;
+}
+
+// ============================================
 // Initialize
 // ============================================
 
@@ -745,6 +921,7 @@ async function initializePresentation() {
     // Initialize interactive demos
     initBloomFilter();
     initHLL();
+    initBloomMathCalc();
     
     // Apply syntax highlighting with Prism.js
     if (typeof Prism !== 'undefined') {
@@ -766,3 +943,4 @@ window.resetHLL = resetHLL;
 window.nextSlide = nextSlide;
 window.prevSlide = prevSlide;
 window.goToSlide = goToSlide;
+window.updateBloomMathCalc = updateBloomMathCalc;

@@ -17,41 +17,48 @@
             </div>
         </div>
         <div class="memory-scaling">
-            <h4>Problema: memoria crește cu fiecare utilizator unic</h4>
+            <h4>Problema: memoria crește <em>liniar</em> cu fiecare utilizator unic (~100 bytes/utilizator)</h4>
             <div class="scaling-bars">
                 <div class="scale-row">
                     <span class="scale-n">1K utilizatori</span>
                     <div class="scale-bar-container">
                         <div class="scale-bar" style="width: 1%;"></div>
                     </div>
-                    <span class="scale-mem good">~40 KB</span>
+                    <span class="scale-mem good">~100 KB</span>
+                </div>
+                <div class="scale-row">
+                    <span class="scale-n">100K utilizatori</span>
+                    <div class="scale-bar-container">
+                        <div class="scale-bar" style="width: 10%;"></div>
+                    </div>
+                    <span class="scale-mem neutral">~10 MB</span>
                 </div>
                 <div class="scale-row">
                     <span class="scale-n">1M utilizatori</span>
                     <div class="scale-bar-container">
-                        <div class="scale-bar" style="width: 5%;"></div>
+                        <div class="scale-bar" style="width: 20%;"></div>
                     </div>
-                    <span class="scale-mem neutral">~40 MB</span>
+                    <span class="scale-mem neutral">~100 MB</span>
+                </div>
+                <div class="scale-row highlight">
+                    <span class="scale-n"><strong>10M utilizatori</strong></span>
+                    <div class="scale-bar-container">
+                        <div class="scale-bar bad" style="width: 60%;"></div>
+                    </div>
+                    <span class="scale-mem bad"><strong>~1 GB</strong></span>
                 </div>
                 <div class="scale-row">
                     <span class="scale-n">100M utilizatori</span>
                     <div class="scale-bar-container">
-                        <div class="scale-bar" style="width: 30%;"></div>
+                        <div class="scale-bar bad" style="width: 100%;"></div>
                     </div>
-                    <span class="scale-mem bad">~4 GB</span>
-                </div>
-                <div class="scale-row highlight">
-                    <span class="scale-n"><strong>1B utilizatori</strong></span>
-                    <div class="scale-bar-container">
-                        <div class="scale-bar bad" style="width: 80%;"></div>
-                    </div>
-                    <span class="scale-mem bad"><strong>~40 GB</strong></span>
+                    <span class="scale-mem bad">~10 GB</span>
                 </div>
             </div>
         </div>
         <div class="memory-insight orange">
             <span class="insight-icon">❌</span>
-            <span>40 GB RAM doar pentru a număra! Și asta pentru <strong>un singur contor</strong>. Ce facem dacă vrem per pagină, per țară, per oră...?</span>
+            <span>10 GB RAM doar pentru a număra! Și asta pentru <strong>un singur contor</strong>. Ce facem dacă vrem per pagină, per țară, per oră...?</span>
         </div>
     </div>
 </div>
