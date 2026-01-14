@@ -9,6 +9,7 @@ let pyodideReady = false;
 let currentSlide = 0;
 let totalSlides = 0;
 let slides = [];
+let currentTheme = 'dark';
 
 let bloomFilter = {
     size: 32,
@@ -38,11 +39,20 @@ function initSlides() {
     // Create dots
     createSlideDots();
     
-    // Show first slide
-    goToSlide(0);
+    // Get initial slide from URL or default to 0
+    const initialSlide = getSlideFromURL();
+    const validSlide = Math.min(Math.max(0, initialSlide), totalSlides - 1);
+    goToSlide(validSlide, false); // Don't update URL on initial load
     
     // Setup keyboard navigation
     document.addEventListener('keydown', handleKeyboard);
+    
+    // Handle browser back/forward
+    window.addEventListener('popstate', (event) => {
+        if (event.state && typeof event.state.slide === 'number') {
+            goToSlide(event.state.slide, false);
+        }
+    });
 }
 
 function createSlideDots() {
@@ -58,7 +68,14 @@ function createSlideDots() {
             dot.classList.add('bloom-dot');
         } else if (slide.classList.contains('hll-section')) {
             dot.classList.add('hll-dot');
+        } else if (slide.classList.contains('transition-section')) {
+            dot.classList.add('transition-dot');
         }
+        
+        // Get slide title for tooltip
+        const slideTitle = getSlideTitle(slide, index);
+        dot.setAttribute('data-tooltip', `${index + 1}. ${slideTitle}`);
+        dot.setAttribute('data-slide-index', index);
         
         dot.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -69,7 +86,25 @@ function createSlideDots() {
     });
 }
 
-function goToSlide(index) {
+function getSlideTitle(slide, index) {
+    // Try to get title from h1 or h2
+    const h1 = slide.querySelector('h1');
+    const h2 = slide.querySelector('h2');
+    
+    if (h1) {
+        return h1.textContent.trim();
+    } else if (h2) {
+        return h2.textContent.trim();
+    }
+    
+    // Fallback based on slide class
+    if (slide.classList.contains('cover')) return 'Introducere';
+    if (slide.classList.contains('final-slide')) return 'Întrebări';
+    
+    return `Slide ${index + 1}`;
+}
+
+function goToSlide(index, updateURL = true) {
     if (index < 0 || index >= totalSlides) return;
     
     // Remove active from all slides
@@ -83,6 +118,41 @@ function goToSlide(index) {
     
     // Update UI
     updateSlideUI();
+    
+    // Update URL
+    if (updateURL) {
+        updateURLWithSlide(index);
+    }
+}
+
+function updateURLWithSlide(index) {
+    const slideNum = index + 1;
+    const newURL = `${window.location.pathname}?slide=${slideNum}#slide-${slideNum}`;
+    window.history.replaceState({ slide: index }, '', newURL);
+}
+
+function getSlideFromURL() {
+    // Check query string first (?slide=5)
+    const urlParams = new URLSearchParams(window.location.search);
+    const querySlide = urlParams.get('slide');
+    if (querySlide) {
+        const slideNum = parseInt(querySlide, 10);
+        if (!isNaN(slideNum) && slideNum >= 1) {
+            return slideNum - 1; // Convert to 0-based index
+        }
+    }
+    
+    // Check hash fragment (#slide-5)
+    const hash = window.location.hash;
+    const hashMatch = hash.match(/#slide-(\d+)/);
+    if (hashMatch) {
+        const slideNum = parseInt(hashMatch[1], 10);
+        if (!isNaN(slideNum) && slideNum >= 1) {
+            return slideNum - 1;
+        }
+    }
+    
+    return 0; // Default to first slide
 }
 
 function nextSlide() {
@@ -157,19 +227,19 @@ function handleKeyboard(e) {
 
 async function loadPyodideRuntime() {
     const statusDot = document.querySelector('.status-dot');
-    const statusText = document.querySelector('.status-text');
+    const pyodideStatus = document.getElementById('pyodideStatus');
     
     // Check if loadPyodide function exists (from CDN)
     if (typeof loadPyodide === 'undefined') {
         console.error('Pyodide library not loaded from CDN');
         statusDot.classList.remove('loading');
         statusDot.style.background = 'var(--accent-danger)';
-        statusText.textContent = 'Pyodide indisponibil';
+        pyodideStatus.title = 'Python indisponibil';
         return;
     }
     
     try {
-        statusText.textContent = 'Se încarcă Python (~10MB)...';
+        pyodideStatus.title = 'Se încarcă Python...';
         console.log('Starting Pyodide load...');
         
         pyodide = await loadPyodide({
@@ -178,7 +248,7 @@ async function loadPyodideRuntime() {
         
         statusDot.classList.remove('loading');
         statusDot.classList.add('ready');
-        statusText.textContent = 'Python gata!';
+        pyodideStatus.title = 'Python gata!';
         pyodideReady = true;
         
         console.log('Pyodide loaded successfully');
@@ -186,8 +256,35 @@ async function loadPyodideRuntime() {
         console.error('Error loading Pyodide:', error);
         statusDot.classList.remove('loading');
         statusDot.style.background = 'var(--accent-danger)';
-        statusText.textContent = 'Eroare: ' + error.message;
+        pyodideStatus.title = 'Eroare Python: ' + error.message;
     }
+}
+
+// ============================================
+// Theme Toggle
+// ============================================
+
+function initTheme() {
+    // Check for saved theme preference or default to dark
+    const savedTheme = localStorage.getItem('presentation-theme') || 'dark';
+    setTheme(savedTheme);
+    
+    // Setup toggle button
+    const toggleBtn = document.getElementById('themeToggle');
+    if (toggleBtn) {
+        toggleBtn.addEventListener('click', toggleTheme);
+    }
+}
+
+function setTheme(theme) {
+    currentTheme = theme;
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('presentation-theme', theme);
+}
+
+function toggleTheme() {
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    setTheme(newTheme);
 }
 
 async function runPythonCode(codeId) {
@@ -493,6 +590,9 @@ function renderHLL() {
 // ============================================
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Initialize theme first
+    initTheme();
+    
     // Initialize slides
     initSlides();
     

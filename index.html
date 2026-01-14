@@ -40,10 +40,15 @@
         </button>
     </div>
 
-    <!-- Pyodide Status -->
-    <div class="pyodide-status" id="pyodideStatus">
-        <span class="status-dot loading"></span>
-        <span class="status-text">Se încarcă Python...</span>
+    <!-- Top Right Controls -->
+    <div class="top-controls">
+        <div class="pyodide-status" id="pyodideStatus" title="Status Python">
+            <span class="status-dot loading"></span>
+        </div>
+        <button class="theme-toggle" id="themeToggle" title="Schimbă tema">
+            <span class="theme-icon light">☀️</span>
+            <span class="theme-icon dark">🌙</span>
+        </button>
     </div>
 
     <!-- Slides Container -->
@@ -63,14 +68,14 @@
             <div class="slide-content cover-content">
                 <div class="institution">
                     <span class="diamond">◆</span>
-                    <span>Universitatea Politehnica București</span>
+                    <span>Universitatea Politehnica Timișoara</span>
                     <span class="diamond">◆</span>
                 </div>
                 <h1 class="cover-title">
                     <span class="title-line">Structuri de Date</span>
                     <span class="title-line accent">Probabilistice</span>
                 </h1>
-                <p class="cover-subtitle">Curs de Structuri de Date și Algoritmi</p>
+                <p class="cover-subtitle">Structuri de Date și Algoritmi</p>
                 <div class="cover-topics">
                     <div class="topic-pill">
                         <span class="topic-icon">◎</span>
@@ -81,14 +86,288 @@
                         <span>HyperLogLog</span>
                     </div>
                 </div>
-                <div class="nav-hint">
-                    <span>Apasă → pentru a continua</span>
+                <div class="cover-author">
+                    <span>Alexandru MARINESCU</span>
                 </div>
             </div>
         </section>
 
-        <!-- SLIDE 1: Introducere - Ce sunt? -->
-        <section class="slide" data-slide="1">
+        <!-- SLIDE 1: Problema - URL-uri malițioase -->
+        <section class="slide transition-section" data-slide="1">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <span class="slide-chapter">00 • Problema</span>
+                    <h2>🔐 O provocare de securitate</h2>
+                </div>
+                <div class="slide-body">
+                    <div class="scenario-box">
+                        <div class="scenario-header">
+                            <span class="scenario-icon">🌐</span>
+                            <h4>Scenariul: Sistem de detecție URL-uri malițioase</h4>
+                        </div>
+                        <p>O soluție de securitate trebuie să verifice <strong>fiecare URL vizitat</strong> împotriva unei liste de site-uri periculoase (phishing, malware, etc.).</p>
+                    </div>
+                    <div class="requirements-grid">
+                        <div class="requirement-card">
+                            <div class="req-icon">⚡</div>
+                            <h4>Rapid</h4>
+                            <p>Verificarea trebuie să fie <strong>instantanee</strong> — utilizatorul nu poate aștepta</p>
+                        </div>
+                        <div class="requirement-card">
+                            <div class="req-icon">📱</div>
+                            <h4>Lightweight</h4>
+                            <p>Trebuie să ruleze pe <strong>dispozitive mobile</strong> cu memorie limitată</p>
+                        </div>
+                        <div class="requirement-card">
+                            <div class="req-icon">🔒</div>
+                            <h4>Local</h4>
+                            <p>Preferabil <strong>fără conexiune la server</strong> pentru fiecare URL (privacy + latență)</p>
+                        </div>
+                    </div>
+                    <div class="challenge-stat">
+                        <span class="challenge-icon">📊</span>
+                        <span class="challenge-text">Lista neagră conține <strong>peste 10 milioane</strong> de URL-uri cunoscute ca periculoase.</span>
+                    </div>
+                    <div class="question-box">
+                        <span class="question-icon">🤔</span>
+                        <span>Cum am rezolva această problemă cu ce știm până acum?</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 2: Soluția cu HashSet -->
+        <section class="slide transition-section" data-slide="2">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <span class="slide-chapter">00 • Soluția clasică</span>
+                    <h2>Ideea: Folosim un HashSet!</h2>
+                </div>
+                <div class="slide-body">
+                    <p class="lead">
+                        Structurile pe care le-am învățat ne oferă operații în <strong>O(1)</strong>...
+                    </p>
+                    <div class="recap-grid">
+                        <div class="recap-card highlighted">
+                            <div class="recap-icon">📦</div>
+                            <h4>HashSet</h4>
+                            <div class="recap-ops">
+                                <span class="op-badge">add(url) → O(1)</span>
+                                <span class="op-badge accent">contains(url) → O(1)</span>
+                                <span class="op-badge">remove(url) → O(1)</span>
+                            </div>
+                            <p>Perfect pentru verificarea apartenenței!</p>
+                            <div class="recap-code">
+                                <code>blacklist.contains(url) → true/false</code>
+                            </div>
+                        </div>
+                        <div class="solution-flow">
+                            <div class="flow-step">
+                                <span class="flow-num">1</span>
+                                <span>Încărcăm toate URL-urile în HashSet</span>
+                            </div>
+                            <div class="flow-arrow">↓</div>
+                            <div class="flow-step">
+                                <span class="flow-num">2</span>
+                                <span>La fiecare vizită: <code>contains(url)</code></span>
+                            </div>
+                            <div class="flow-arrow">↓</div>
+                            <div class="flow-step success">
+                                <span class="flow-num">✓</span>
+                                <span>Răspuns instant în O(1)!</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="recap-insight warning">
+                        <span class="insight-icon">⚠️</span>
+                        <span>Dar... <strong>cât RAM consumă</strong> un HashSet cu 10 milioane de URL-uri?</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 3: Calcul memorie HashSet -->
+        <section class="slide transition-section" data-slide="3">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <span class="slide-chapter">00 • Problema</span>
+                    <h2>📊 Calculăm memoria necesară</h2>
+                </div>
+                <div class="slide-body code-slide">
+                    <div class="scale-comparison compact">
+                        <div class="scale-item">
+                            <div class="scale-number">10 milioane</div>
+                            <div class="scale-label">URL-uri</div>
+                        </div>
+                        <div class="scale-arrow">×</div>
+                        <div class="scale-item">
+                            <div class="scale-number">~50 bytes</div>
+                            <div class="scale-label">per URL + overhead</div>
+                        </div>
+                        <div class="scale-arrow">=</div>
+                        <div class="scale-item problem">
+                            <div class="scale-number">~500 MB</div>
+                            <div class="scale-label">RAM necesar</div>
+                        </div>
+                    </div>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-lang">Python</span>
+                            <button class="run-btn" onclick="runPythonCode('hashsetMemory')">
+                                <span class="play-icon">▶</span> Rulează
+                            </button>
+                        </div>
+                        <pre class="language-python"><code class="language-python" id="hashsetMemory">def estimate_hashset_memory(num_elements, avg_element_size=50):
+    """
+    Estimare memorie pentru un HashSet:
+    - Fiecare element: dimensiunea datelor + overhead obiect
+    - Tabel hash: ~8 bytes per bucket (pointer)
+    - Load factor ~0.75 → trebuie mai multe bucket-uri
+    """
+    element_overhead = 50  # overhead per obiect
+    bucket_size = 8        # pointer per bucket
+    load_factor = 0.75
+    
+    data_size = num_elements * avg_element_size
+    object_overhead = num_elements * element_overhead
+    buckets_needed = int(num_elements / load_factor)
+    hash_table_size = buckets_needed * bucket_size
+    
+    return data_size + object_overhead + hash_table_size
+
+# Problema noastră cu URL-urile malițioase
+scenarios = [
+    ("10K emails spam", 10_000, 30),
+    ("1M utilizatori", 1_000_000, 20),
+    ("10M URL-uri ⬅️", 10_000_000, 50),  # cazul nostru!
+    ("100M IP-uri", 100_000_000, 16),
+]
+
+print("HashSet - Memorie necesară:\n")
+print(f"{'Scenariul':<25} {'Elemente':>12} {'Memorie':>12}")
+print("-" * 52)
+
+for name, n, size in scenarios:
+    mem = estimate_hashset_memory(n, size)
+    if mem < 1024**2:
+        mem_str = f"{mem/1024:.1f} KB"
+    elif mem < 1024**3:
+        mem_str = f"{mem/1024**2:.1f} MB"
+    else:
+        mem_str = f"{mem/1024**3:.2f} GB"
+    print(f"{name:<25} {n:>12,} {mem_str:>12}")</code></pre>
+                        <div class="code-output" id="output-hashsetMemory">
+                            <span class="output-placeholder">Apasă "Rulează" pentru a vedea rezultatul...</span>
+                        </div>
+                    </div>
+                    <div class="problem-list">
+                        <div class="problem-item">
+                            <span class="problem-icon">❌</span>
+                            <span>500 MB per aplicație/tab? Imposibil pe mobile!</span>
+                        </div>
+                        <div class="problem-item">
+                            <span class="problem-icon">❌</span>
+                            <span>Verificare pe server la fiecare URL? Latență + probleme de privacy!</span>
+                        </div>
+                    </div>
+                    <div class="memory-insight">
+                        <span class="insight-icon">🤔</span>
+                        <span>Întrebarea cheie: <strong>Avem nevoie de 100% precizie în toate cazurile?</strong></span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 4: Trade-off-ul fundamental -->
+        <section class="slide transition-section" data-slide="4">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <span class="slide-chapter">00 • Trade-off</span>
+                    <h2>Ce am sacrifica pentru eficiență?</h2>
+                </div>
+                <div class="slide-body">
+                    <div class="tradeoff-visual">
+                        <div class="tradeoff-side left">
+                            <div class="tradeoff-title">Structuri Deterministe</div>
+                            <div class="tradeoff-bar deterministic"></div>
+                            <ul class="tradeoff-list">
+                                <li>✓ Răspuns 100% corect</li>
+                                <li>✓ Putem enumera elementele</li>
+                                <li>✓ Putem șterge</li>
+                                <li class="negative">✗ Memorie proporțională cu n</li>
+                                <li class="negative">✗ Nu scalează la miliarde</li>
+                            </ul>
+                        </div>
+                        <div class="tradeoff-center">
+                            <div class="balance-icon">⚖️</div>
+                            <div class="balance-text">Trade-off</div>
+                        </div>
+                        <div class="tradeoff-side right">
+                            <div class="tradeoff-title">Structuri Probabilistice</div>
+                            <div class="tradeoff-bar probabilistic"></div>
+                            <ul class="tradeoff-list">
+                                <li>✓ Memorie constantă sau sub-liniară</li>
+                                <li>✓ Extrem de rapidă</li>
+                                <li>✓ Scalează la orice dimensiune</li>
+                                <li class="negative">✗ Poate avea erori mici</li>
+                                <li class="negative">✗ Nu stochează datele reale</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="tradeoff-conclusion">
+                        <p>
+                            <strong>Ideea cheie:</strong> În multe aplicații reale, un răspuns 
+                            <em>"99% sigur"</em> în <strong>1 KB</strong> e mai util decât un răspuns 
+                            <em>"100% sigur"</em> în <strong>1 GB</strong>.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 5: Analogia zilnică -->
+        <section class="slide transition-section" data-slide="5">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <span class="slide-chapter">00 • Analogie</span>
+                    <h2>🎯 Unde acceptăm aproximări în viața reală?</h2>
+                </div>
+                <div class="slide-body">
+                    <div class="analogy-grid">
+                        <div class="analogy-card">
+                            <div class="analogy-icon">🌡️</div>
+                            <h4>Temperatura</h4>
+                            <p>Nu avem nevoie de 23.4721°C exact. <br><strong>"Aproximativ 23°C"</strong> e suficient.</p>
+                        </div>
+                        <div class="analogy-card">
+                            <div class="analogy-icon">👥</div>
+                            <h4>Audiență YouTube</h4>
+                            <p>"2.3M vizualizări" nu e numărul exact, dar e <strong>suficient de informativ</strong>.</p>
+                        </div>
+                        <div class="analogy-card">
+                            <div class="analogy-icon">🔍</div>
+                            <h4>Căutare Google</h4>
+                            <p>"Aproximativ 1,230,000 rezultate" — contează ordinul de mărime, nu cifra exactă.</p>
+                        </div>
+                        <div class="analogy-card">
+                            <div class="analogy-icon">📊</div>
+                            <h4>Sondaje de opinie</h4>
+                            <p>1000 de respondenți pot estima opinia a milioane cu <strong>±3% eroare</strong>.</p>
+                        </div>
+                    </div>
+                    <div class="analogy-insight">
+                        <p>
+                            <span class="insight-icon">💡</span>
+                            Structurile probabilistice aplică <strong>aceleași principii statistice</strong> 
+                            în informatică: acceptăm o eroare mică, controlată, în schimbul unor economii masive.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 6: Ce vom învăța -->
+        <section class="slide" data-slide="6">
             <div class="slide-content">
                 <div class="slide-header">
                     <span class="slide-chapter">00 • Introducere</span>
@@ -120,8 +399,8 @@
             </div>
         </section>
 
-        <!-- SLIDE 2: Comparație -->
-        <section class="slide" data-slide="2">
+        <!-- SLIDE 7: Comparație -->
+        <section class="slide" data-slide="7">
             <div class="slide-content">
                 <div class="slide-header">
                     <span class="slide-chapter">00 • Introducere</span>
@@ -166,8 +445,8 @@
             </div>
         </section>
 
-        <!-- SLIDE 3: Bloom Filter - Introducere -->
-        <section class="slide bloom-section" data-slide="3">
+        <!-- SLIDE 8: Bloom Filter - Introducere -->
+        <section class="slide bloom-section" data-slide="8">
             <div class="slide-content">
                 <div class="slide-header">
                     <span class="slide-chapter">01 • Bloom Filters</span>
@@ -204,8 +483,8 @@
             </div>
         </section>
 
-        <!-- SLIDE 4: Bloom Filter - Cum funcționează -->
-        <section class="slide bloom-section" data-slide="4">
+        <!-- SLIDE 9: Bloom Filter - Cum funcționează -->
+        <section class="slide bloom-section" data-slide="9">
             <div class="slide-content">
                 <div class="slide-header">
                     <span class="slide-chapter">01 • Bloom Filters</span>
@@ -253,8 +532,8 @@
             </div>
         </section>
 
-        <!-- SLIDE 5: Bloom Filter - Demo Interactiv -->
-        <section class="slide bloom-section" data-slide="5">
+        <!-- SLIDE 10: Bloom Filter - Demo Interactiv -->
+        <section class="slide bloom-section" data-slide="10">
             <div class="slide-content">
                 <div class="slide-header">
                     <span class="slide-chapter">01 • Bloom Filters</span>
@@ -284,8 +563,8 @@
             </div>
         </section>
 
-        <!-- SLIDE 6: Bloom Filter - Implementare Python -->
-        <section class="slide bloom-section" data-slide="6">
+        <!-- SLIDE 11: Bloom Filter - Implementare Python -->
+        <section class="slide bloom-section" data-slide="11">
             <div class="slide-content">
                 <div class="slide-header">
                     <span class="slide-chapter">01 • Bloom Filters</span>
@@ -340,8 +619,8 @@ print(f"'elefant' în filter? {bf.contains('elefant')}")</code></pre>
             </div>
         </section>
 
-        <!-- SLIDE 7: Bloom Filter - Matematică -->
-        <section class="slide bloom-section" data-slide="7">
+        <!-- SLIDE 12: Bloom Filter - Matematică -->
+        <section class="slide bloom-section" data-slide="12">
             <div class="slide-content">
                 <div class="slide-header">
                     <span class="slide-chapter">01 • Bloom Filters</span>
@@ -387,8 +666,8 @@ print(f"'elefant' în filter? {bf.contains('elefant')}")</code></pre>
             </div>
         </section>
 
-        <!-- SLIDE 8: Bloom Filter - Calcule Python -->
-        <section class="slide bloom-section" data-slide="8">
+        <!-- SLIDE 13: Bloom Filter - Calcule Python -->
+        <section class="slide bloom-section" data-slide="13">
             <div class="slide-content">
                 <div class="slide-header">
                     <span class="slide-chapter">01 • Bloom Filters</span>
@@ -438,8 +717,8 @@ print(f"  Economie: {(1-m_needed/8/1024/1024/hashset_size)*100:.0f}%")</code></p
             </div>
         </section>
 
-        <!-- SLIDE 9: Bloom Filter - Aplicații -->
-        <section class="slide bloom-section" data-slide="9">
+        <!-- SLIDE 14: Bloom Filter - Aplicații -->
+        <section class="slide bloom-section" data-slide="14">
             <div class="slide-content">
                 <div class="slide-header">
                     <span class="slide-chapter">01 • Bloom Filters</span>
@@ -472,8 +751,8 @@ print(f"  Economie: {(1-m_needed/8/1024/1024/hashset_size)*100:.0f}%")</code></p
             </div>
         </section>
 
-        <!-- SLIDE 10: HyperLogLog - Introducere -->
-        <section class="slide hll-section" data-slide="10">
+        <!-- SLIDE 15: HyperLogLog - Introducere -->
+        <section class="slide hll-section" data-slide="15">
             <div class="slide-content">
                 <div class="slide-header">
                     <span class="slide-chapter">02 • HyperLogLog</span>
@@ -504,8 +783,8 @@ print(f"  Economie: {(1-m_needed/8/1024/1024/hashset_size)*100:.0f}%")</code></p
             </div>
         </section>
 
-        <!-- SLIDE 11: HyperLogLog - Intuiția -->
-        <section class="slide hll-section" data-slide="11">
+        <!-- SLIDE 16: HyperLogLog - Intuiția -->
+        <section class="slide hll-section" data-slide="16">
             <div class="slide-content">
                 <div class="slide-header">
                     <span class="slide-chapter">02 • HyperLogLog</span>
@@ -545,8 +824,8 @@ print(f"  Economie: {(1-m_needed/8/1024/1024/hashset_size)*100:.0f}%")</code></p
             </div>
         </section>
 
-        <!-- SLIDE 12: HyperLogLog - Algoritm -->
-        <section class="slide hll-section" data-slide="12">
+        <!-- SLIDE 17: HyperLogLog - Algoritm -->
+        <section class="slide hll-section" data-slide="17">
             <div class="slide-content">
                 <div class="slide-header">
                     <span class="slide-chapter">02 • HyperLogLog</span>
@@ -594,8 +873,8 @@ print(f"  Economie: {(1-m_needed/8/1024/1024/hashset_size)*100:.0f}%")</code></p
             </div>
         </section>
 
-        <!-- SLIDE 13: HyperLogLog - Demo Interactiv -->
-        <section class="slide hll-section" data-slide="13">
+        <!-- SLIDE 18: HyperLogLog - Demo Interactiv -->
+        <section class="slide hll-section" data-slide="18">
             <div class="slide-content">
                 <div class="slide-header">
                     <span class="slide-chapter">02 • HyperLogLog</span>
@@ -636,8 +915,8 @@ print(f"  Economie: {(1-m_needed/8/1024/1024/hashset_size)*100:.0f}%")</code></p
             </div>
         </section>
 
-        <!-- SLIDE 14: HyperLogLog - Implementare Python -->
-        <section class="slide hll-section" data-slide="14">
+        <!-- SLIDE 19: HyperLogLog - Implementare Python -->
+        <section class="slide hll-section" data-slide="19">
             <div class="slide-content">
                 <div class="slide-header">
                     <span class="slide-chapter">02 • HyperLogLog</span>
@@ -692,8 +971,8 @@ print(f"Unice reale: 1000, Estimare: {hll.estimate()}")</code></pre>
             </div>
         </section>
 
-        <!-- SLIDE 15: HyperLogLog - Matematică -->
-        <section class="slide hll-section" data-slide="15">
+        <!-- SLIDE 20: HyperLogLog - Matematică -->
+        <section class="slide hll-section" data-slide="20">
             <div class="slide-content">
                 <div class="slide-header">
                     <span class="slide-chapter">02 • HyperLogLog</span>
@@ -726,8 +1005,8 @@ print(f"Unice reale: 1000, Estimare: {hll.estimate()}")</code></pre>
             </div>
         </section>
 
-        <!-- SLIDE 16: HyperLogLog - Trade-off Table -->
-        <section class="slide hll-section" data-slide="16">
+        <!-- SLIDE 21: HyperLogLog - Trade-off Table -->
+        <section class="slide hll-section" data-slide="21">
             <div class="slide-content">
                 <div class="slide-header">
                     <span class="slide-chapter">02 • HyperLogLog</span>
@@ -772,8 +1051,8 @@ print(f"  HLL p=14: ~12 KB (reducere de 600,000x!)")</code></pre>
             </div>
         </section>
 
-        <!-- SLIDE 17: HyperLogLog - Aplicații -->
-        <section class="slide hll-section" data-slide="17">
+        <!-- SLIDE 22: HyperLogLog - Aplicații -->
+        <section class="slide hll-section" data-slide="22">
             <div class="slide-content">
                 <div class="slide-header">
                     <span class="slide-chapter">02 • HyperLogLog</span>
@@ -806,8 +1085,8 @@ print(f"  HLL p=14: ~12 KB (reducere de 600,000x!)")</code></pre>
             </div>
         </section>
 
-        <!-- SLIDE 18: Concluzii - Comparație -->
-        <section class="slide conclusion-section" data-slide="18">
+        <!-- SLIDE 23: Concluzii - Comparație -->
+        <section class="slide conclusion-section" data-slide="23">
             <div class="slide-content">
                 <div class="slide-header">
                     <span class="slide-chapter">03 • Concluzii</span>
@@ -854,8 +1133,8 @@ print(f"  HLL p=14: ~12 KB (reducere de 600,000x!)")</code></pre>
             </div>
         </section>
 
-        <!-- SLIDE 19: Concluzii - Când să folosești -->
-        <section class="slide conclusion-section" data-slide="19">
+        <!-- SLIDE 24: Concluzii - Când să folosești -->
+        <section class="slide conclusion-section" data-slide="24">
             <div class="slide-content">
                 <div class="slide-header">
                     <span class="slide-chapter">03 • Concluzii</span>
@@ -904,8 +1183,8 @@ print(f"  HLL p=14: ~12 KB (reducere de 600,000x!)")</code></pre>
             </div>
         </section>
 
-        <!-- SLIDE 20: Final -->
-        <section class="slide final-slide" data-slide="20">
+        <!-- SLIDE 25: Final -->
+        <section class="slide final-slide" data-slide="25">
             <div class="slide-content cover-content">
                 <div class="final-icon">🎓</div>
                 <h1>Întrebări?</h1>
@@ -916,7 +1195,7 @@ print(f"  HLL p=14: ~12 KB (reducere de 600,000x!)")</code></pre>
                 </div>
                 <div class="institution final-institution">
                     <span class="diamond">◆</span>
-                    <span>Universitatea Politehnica București</span>
+                    <span>Universitatea Politehnica Timișoara</span>
                     <span class="diamond">◆</span>
                 </div>
             </div>
