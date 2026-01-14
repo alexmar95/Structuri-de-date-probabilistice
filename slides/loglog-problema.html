@@ -1,0 +1,46 @@
+<div class="slide-content">
+    <div class="slide-header">
+        <span class="slide-chapter">02 • LogLog</span>
+        <h2>📉 Problema: Varianță mare</h2>
+    </div>
+    <div class="slide-body">
+        <div class="variance-demo">
+            <h4>Experiment: 1000 de elemente, 10 rulări diferite</h4>
+            <div class="variance-results">
+                <div class="var-row">
+                    <span class="var-run">Run 1:</span>
+                    <span class="var-zeros">max_zeros = 9</span>
+                    <span class="var-estimate">→ 2⁹ = <strong>512</strong></span>
+                </div>
+                <div class="var-row">
+                    <span class="var-run">Run 2:</span>
+                    <span class="var-zeros">max_zeros = 11</span>
+                    <span class="var-estimate">→ 2¹¹ = <strong>2048</strong></span>
+                </div>
+                <div class="var-row">
+                    <span class="var-run">Run 3:</span>
+                    <span class="var-zeros">max_zeros = 10</span>
+                    <span class="var-estimate">→ 2¹⁰ = <strong>1024</strong></span>
+                </div>
+                <div class="var-row highlight">
+                    <span class="var-run">Real:</span>
+                    <span class="var-zeros"></span>
+                    <span class="var-estimate bad"><strong>1000</strong></span>
+                </div>
+            </div>
+        </div>
+        <div class="problem-explanation-box">
+            <h4>De ce varianța e mare?</h4>
+            <ul class="problem-list-items">
+                <li>Un singur element "norocos" cu mulți zerouri → supraestimăm masiv</li>
+                <li>Estimarea poate fi doar puteri ale lui 2 (512, 1024, 2048...)</li>
+                <li>Eroarea standard: <strong>~1.87 / √1 = 187%</strong> 😱</li>
+            </ul>
+        </div>
+        <div class="solution-teaser orange">
+            <span class="solution-icon">💡</span>
+            <span>Soluția: <strong>Mai multe registre!</strong> Mediem rezultatele pentru a reduce varianța.</span>
+        </div>
+    </div>
+</div>
+

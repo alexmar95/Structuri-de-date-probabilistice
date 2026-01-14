@@ -1,0 +1,56 @@
+<div class="slide-content">
+    <div class="slide-header">
+        <span class="slide-chapter">02 • LogLog</span>
+        <h2>🎲 Ideea de bază: Zerouri în hash-uri</h2>
+    </div>
+    <div class="slide-body">
+        <div class="intuition-box">
+            <p class="lead">Imaginează-ți că arunci o monedă repetat și numeri câte "cap" consecutive obții:</p>
+            <div class="probability-list">
+                <div class="prob-item">
+                    <span class="prob-count">1</span>
+                    <span class="prob-bar" style="width: 50%"></span>
+                    <span class="prob-text">"cap" consecutiv → 50% șansă</span>
+                </div>
+                <div class="prob-item">
+                    <span class="prob-count">2</span>
+                    <span class="prob-bar" style="width: 25%"></span>
+                    <span class="prob-text">"cap-uri" consecutive → 25% șansă</span>
+                </div>
+                <div class="prob-item">
+                    <span class="prob-count">5</span>
+                    <span class="prob-bar" style="width: 8%"></span>
+                    <span class="prob-text">"cap-uri" consecutive → 3% șansă</span>
+                </div>
+                <div class="prob-item">
+                    <span class="prob-count">10</span>
+                    <span class="prob-bar" style="width: 3%"></span>
+                    <span class="prob-text">"cap-uri" consecutive → 0.1% șansă</span>
+                </div>
+            </div>
+        </div>
+        <div class="key-insight">
+            <span class="insight-icon">💡</span>
+            <div class="insight-content">
+                <strong>Observație cheie:</strong> Dacă am văzut <code>k</code> zerouri consecutive la începutul unui hash, 
+                probabil am procesat aproximativ <strong>2<sup>k</sup></strong> elemente distincte!
+            </div>
+        </div>
+        <div class="hash-example">
+            <div class="hash-label">Hash binar:</div>
+            <div class="hash-bits">
+                <span class="bit zero">0</span>
+                <span class="bit zero">0</span>
+                <span class="bit zero">0</span>
+                <span class="bit one">1</span>
+                <span class="bit dim">0</span>
+                <span class="bit dim">1</span>
+                <span class="bit dim">1</span>
+                <span class="bit dim">0</span>
+                <span class="bit dim">...</span>
+            </div>
+            <div class="hash-annotation">← 3 zerouri = am văzut probabil ~2³ = 8 elemente</div>
+        </div>
+    </div>
+</div>
+

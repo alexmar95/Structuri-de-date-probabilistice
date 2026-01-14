@@ -1,0 +1,58 @@
+<div class="slide-content">
+    <div class="slide-header">
+        <span class="slide-chapter">02 • LogLog</span>
+        <h2>📊 LogLog: Mai multe registre</h2>
+    </div>
+    <div class="slide-body">
+        <div class="idea-box">
+            <h4>💡 Stochastic Averaging</h4>
+            <p>Împărțim elementele în <strong>m = 2<sup>p</sup></strong> grupuri (registre) și mediem rezultatele.</p>
+        </div>
+        <div class="register-algorithm">
+            <div class="reg-step">
+                <span class="reg-num">1</span>
+                <div class="reg-content">
+                    <strong>Primii p biți</strong> ai hash-ului → indexul registrului
+                    <div class="reg-example">
+                        <code>hash = <span class="highlight-bits">0101</span>1001...</code>
+                        <span class="reg-arrow">→</span>
+                        <code>registru[5]</code>
+                    </div>
+                </div>
+            </div>
+            <div class="reg-step">
+                <span class="reg-num">2</span>
+                <div class="reg-content">
+                    <strong>Restul biților</strong> → numărăm leading zeros
+                    <div class="reg-example">
+                        <code>hash = 0101<span class="highlight-bits">0001...</span></code>
+                        <span class="reg-arrow">→</span>
+                        <code>3 zerouri</code>
+                    </div>
+                </div>
+            </div>
+            <div class="reg-step">
+                <span class="reg-num">3</span>
+                <div class="reg-content">
+                    <strong>Actualizăm</strong> registrul cu maximul
+                    <div class="reg-example">
+                        <code>R[5] = max(R[5], 3 + 1)</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="formula-box">
+            <h4>Formula LogLog:</h4>
+            <div class="formula-content">
+                <span class="formula-main">E = α<sub>m</sub> · m · 2<sup>R̄</sup></span>
+                <span class="formula-desc">unde R̄ = media aritmetică a registrelor</span>
+            </div>
+        </div>
+        <div class="improvement-stat">
+            <span class="stat-label">Eroare standard cu m registre:</span>
+            <span class="stat-value">σ ≈ 1.30 / √m</span>
+            <span class="stat-example">m=64 → ~16% eroare, m=256 → ~8% eroare</span>
+        </div>
+    </div>
+</div>
+

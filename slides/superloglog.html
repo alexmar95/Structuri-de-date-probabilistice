@@ -1,0 +1,58 @@
+<div class="slide-content">
+    <div class="slide-header">
+        <span class="slide-chapter">02 • SuperLogLog</span>
+        <h2>🚀 SuperLogLog: Eliminăm outlier-ii</h2>
+    </div>
+    <div class="slide-body">
+        <div class="evolution-box">
+            <span class="evolution-from">LogLog</span>
+            <span class="evolution-arrow">→</span>
+            <span class="evolution-to">SuperLogLog</span>
+        </div>
+        <div class="problem-recap">
+            <h4>⚠️ Problema cu LogLog:</h4>
+            <p>Câteva registre cu valori anormal de mari (outliers) distorsionează media aritmetică.</p>
+        </div>
+        <div class="solution-box">
+            <h4>💡 Soluția: Truncated Mean</h4>
+            <p>Eliminăm cele mai mari 30% din valori înainte de a calcula media.</p>
+            <div class="truncation-visual">
+                <div class="truncation-row">
+                    <span class="trunc-label">Registre sortate:</span>
+                    <div class="trunc-values">
+                        <span class="trunc-val kept">2</span>
+                        <span class="trunc-val kept">3</span>
+                        <span class="trunc-val kept">3</span>
+                        <span class="trunc-val kept">4</span>
+                        <span class="trunc-val kept">4</span>
+                        <span class="trunc-val kept">4</span>
+                        <span class="trunc-val kept">5</span>
+                        <span class="trunc-val removed">7</span>
+                        <span class="trunc-val removed">8</span>
+                        <span class="trunc-val removed">12</span>
+                    </div>
+                </div>
+                <div class="truncation-annotation">
+                    <span class="kept-label">✓ Păstrăm 70%</span>
+                    <span class="removed-label">✗ Eliminăm 30%</span>
+                </div>
+            </div>
+        </div>
+        <div class="improvement-comparison">
+            <div class="compare-item">
+                <span class="compare-name">LogLog:</span>
+                <span class="compare-error">σ ≈ 1.30 / √m</span>
+            </div>
+            <div class="compare-item improved">
+                <span class="compare-name">SuperLogLog:</span>
+                <span class="compare-error">σ ≈ 1.05 / √m</span>
+                <span class="compare-gain">~20% mai precis!</span>
+            </div>
+        </div>
+        <div class="next-question orange">
+            <span class="next-icon">🤔</span>
+            <span>Putem face și mai bine? Da! Cu <strong>media armonică</strong>.</span>
+        </div>
+    </div>
+</div>
+

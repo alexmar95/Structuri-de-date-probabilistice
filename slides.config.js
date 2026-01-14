@@ -87,7 +87,7 @@ const SLIDES_CONFIG = [
         title: 'Aplicații în Lumea Reală'
     },
 
-    // ========== TRANZIȚIE SPRE HYPERLOGLOG ==========
+    // ========== TRANZIȚIE: De ce avem nevoie de HLL ==========
     {
         file: 'hll-problema.html',
         classes: ['transition-section', 'hll-transition'],
@@ -109,21 +109,52 @@ const SLIDES_CONFIG = [
         title: 'Bloom Filter + Contor'
     },
 
+    // ========== INTRODUCERE HYPERLOGLOG ==========
+    {
+        file: 'hll-solutia-intro.html',
+        classes: ['hll-section'],
+        title: 'HyperLogLog: Numărare la scară de miliarde'
+    },
+
+    // ========== LOGLOG: Fundamente ==========
+    {
+        file: 'loglog-intuitie.html',
+        classes: ['hll-section'],
+        title: 'Ideea de bază: Zerouri în hash-uri'
+    },
+    {
+        file: 'loglog-simplu.html',
+        classes: ['hll-section'],
+        title: 'Algoritmul simplu (un registru)'
+    },
+    {
+        file: 'loglog-problema.html',
+        classes: ['hll-section'],
+        title: 'Problema: Varianță mare'
+    },
+    {
+        file: 'loglog-registre.html',
+        classes: ['hll-section'],
+        title: 'LogLog: Mai multe registre'
+    },
+
+    // ========== SUPERLOGLOG ==========
+    {
+        file: 'superloglog.html',
+        classes: ['hll-section'],
+        title: 'SuperLogLog: Eliminăm outlier-ii'
+    },
+
     // ========== HYPERLOGLOG ==========
     {
-        file: 'hll-intro.html',
+        file: 'hyperloglog-intro.html',
         classes: ['hll-section'],
-        title: 'Ce este HyperLogLog?'
+        title: 'HyperLogLog: Media Armonică'
     },
     {
-        file: 'hll-intuitie.html',
+        file: 'hyperloglog-corectii.html',
         classes: ['hll-section'],
-        title: 'Intuiția: Experimentul cu moneda'
-    },
-    {
-        file: 'hll-algoritm.html',
-        classes: ['hll-section'],
-        title: 'Cum funcționează algoritmul?'
+        title: 'Corecții pentru cazuri extreme'
     },
     {
         file: 'hll-demo.html',

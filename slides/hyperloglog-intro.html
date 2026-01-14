@@ -1,0 +1,55 @@
+<div class="slide-content">
+    <div class="slide-header">
+        <span class="slide-chapter">02 • HyperLogLog</span>
+        <h2>⚡ HyperLogLog: Media Armonică</h2>
+    </div>
+    <div class="slide-body">
+        <div class="evolution-box">
+            <span class="evolution-from">LogLog</span>
+            <span class="evolution-arrow">→</span>
+            <span class="evolution-mid">SuperLogLog</span>
+            <span class="evolution-arrow">→</span>
+            <span class="evolution-to highlight">HyperLogLog</span>
+        </div>
+        <div class="key-innovation">
+            <h4>💡 Inovația cheie (Flajolet et al., 2007)</h4>
+            <p>În loc de medie aritmetică sau truncată, folosim <strong>media armonică</strong> a estimărilor.</p>
+        </div>
+        <div class="harmonic-explanation">
+            <div class="mean-compare">
+                <div class="mean-type">
+                    <h5>Media Aritmetică</h5>
+                    <div class="mean-formula">(a + b + c) / 3</div>
+                    <p class="mean-problem">Sensibilă la outliers mari</p>
+                </div>
+                <div class="mean-type highlight">
+                    <h5>Media Armonică</h5>
+                    <div class="mean-formula">3 / (1/a + 1/b + 1/c)</div>
+                    <p class="mean-benefit">Reduce impactul valorilor mari</p>
+                </div>
+            </div>
+        </div>
+        <div class="formula-box hll">
+            <h4>Formula HyperLogLog:</h4>
+            <div class="formula-content">
+                <span class="formula-main">E = α<sub>m</sub> · m² · (Σ 2<sup>-R[j]</sup>)<sup>-1</sup></span>
+            </div>
+        </div>
+        <div class="final-improvement">
+            <div class="compare-item">
+                <span class="compare-name">LogLog:</span>
+                <span class="compare-error">σ ≈ 1.30 / √m</span>
+            </div>
+            <div class="compare-item">
+                <span class="compare-name">SuperLogLog:</span>
+                <span class="compare-error">σ ≈ 1.05 / √m</span>
+            </div>
+            <div class="compare-item best">
+                <span class="compare-name">HyperLogLog:</span>
+                <span class="compare-error">σ ≈ 1.04 / √m</span>
+                <span class="compare-gain">Optimal teoretic!</span>
+            </div>
+        </div>
+    </div>
+</div>
+

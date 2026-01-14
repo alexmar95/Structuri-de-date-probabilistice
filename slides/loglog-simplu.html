@@ -1,0 +1,44 @@
+<div class="slide-content">
+    <div class="slide-header">
+        <span class="slide-chapter">02 • LogLog</span>
+        <h2>📝 Algoritmul simplu (un singur registru)</h2>
+    </div>
+    <div class="slide-body">
+        <div class="algorithm-simple">
+            <div class="algo-step-box">
+                <span class="step-num">1</span>
+                <div class="step-content">
+                    <h4>Inițializare</h4>
+                    <code>max_zeros = 0</code>
+                </div>
+            </div>
+            <div class="algo-arrow">↓</div>
+            <div class="algo-step-box">
+                <span class="step-num">2</span>
+                <div class="step-content">
+                    <h4>Pentru fiecare element</h4>
+                    <code>hash = hash_function(element)</code><br>
+                    <code>zeros = count_leading_zeros(hash)</code><br>
+                    <code>max_zeros = max(max_zeros, zeros)</code>
+                </div>
+            </div>
+            <div class="algo-arrow">↓</div>
+            <div class="algo-step-box">
+                <span class="step-num">3</span>
+                <div class="step-content">
+                    <h4>Estimare</h4>
+                    <code>cardinality ≈ 2<sup>max_zeros</sup></code>
+                </div>
+            </div>
+        </div>
+        <div class="memory-highlight">
+            <span class="mem-icon">💾</span>
+            <span class="mem-text">Memorie necesară: <strong>un singur număr</strong> (max_zeros)!</span>
+        </div>
+        <div class="problem-teaser">
+            <span class="problem-icon">⚠️</span>
+            <span>Dar... cât de precisă e această estimare?</span>
+        </div>
+    </div>
+</div>
+
