@@ -174,11 +174,6 @@ const SLIDES_CONFIG = [
         title: 'Congluzii'
     },
     {
-        file: 'concluzii-cand.html',
-        classes: ['conclusion-section'],
-        title: 'Când să le folosești?'
-    },
-    {
         file: 'final.html',
         classes: ['final-slide'],
         title: 'Întrebări?'
