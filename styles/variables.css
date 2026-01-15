@@ -104,7 +104,6 @@
     border: 1px solid var(--bg-tertiary);
 }
 
-[data-theme="light"] .pyodide-status,
 [data-theme="light"] .theme-toggle {
     background: var(--bg-card);
     border-color: var(--bg-tertiary);

@@ -4,8 +4,6 @@
 // ============================================
 
 // Global state
-let pyodide = null;
-let pyodideReady = false;
 let currentSlide = 0;
 let totalSlides = 0;
 let slides = [];
@@ -297,45 +295,6 @@ function handleKeyboard(e) {
 
 
 // ============================================
-// Pyodide Setup
-// ============================================
-
-async function loadPyodideRuntime() {
-    const statusDot = document.querySelector('.status-dot');
-    const pyodideStatus = document.getElementById('pyodideStatus');
-    
-    // Check if loadPyodide function exists (from CDN)
-    if (typeof loadPyodide === 'undefined') {
-        console.error('Pyodide library not loaded from CDN');
-        statusDot.classList.remove('loading');
-        statusDot.style.background = 'var(--accent-danger)';
-        pyodideStatus.title = 'Python indisponibil';
-        return;
-    }
-    
-    try {
-        pyodideStatus.title = 'Se încarcă Python...';
-        console.log('Starting Pyodide load...');
-        
-        pyodide = await loadPyodide({
-            indexURL: "https://cdn.jsdelivr.net/pyodide/v0.24.1/full/"
-        });
-        
-        statusDot.classList.remove('loading');
-        statusDot.classList.add('ready');
-        pyodideStatus.title = 'Python gata!';
-        pyodideReady = true;
-        
-        console.log('Pyodide loaded successfully');
-    } catch (error) {
-        console.error('Error loading Pyodide:', error);
-        statusDot.classList.remove('loading');
-        statusDot.style.background = 'var(--accent-danger)';
-        pyodideStatus.title = 'Eroare Python: ' + error.message;
-    }
-}
-
-// ============================================
 // Theme Toggle
 // ============================================
 
@@ -423,40 +382,6 @@ function resetHideNavTimer() {
     }
     // Set new timer to hide after 3 seconds
     hideNavTimeout = setTimeout(hideNav, 3000);
-}
-
-async function runPythonCode(codeId) {
-    if (!pyodideReady) {
-        alert('Python se încarcă încă. Vă rugăm așteptați câteva secunde.');
-        return;
-    }
-    
-    const codeElement = document.getElementById(codeId);
-    const outputElement = document.getElementById(`output-${codeId}`);
-    
-    if (!codeElement || !outputElement) return;
-    
-    const code = codeElement.textContent;
-    outputElement.innerHTML = '<span class="output-placeholder">Se execută...</span>';
-    
-    try {
-        // Capture stdout
-        pyodide.runPython(`
-import sys
-from io import StringIO
-sys.stdout = StringIO()
-        `);
-        
-        // Run the user code
-        await pyodide.runPythonAsync(code);
-        
-        // Get the output
-        const output = pyodide.runPython(`sys.stdout.getvalue()`);
-        outputElement.textContent = output || 'Cod executat cu succes (fără output).';
-        
-    } catch (error) {
-        outputElement.innerHTML = `<span style="color: var(--accent-danger);">Eroare: ${error.message}</span>`;
-    }
 }
 
 // ============================================
@@ -1180,9 +1105,6 @@ async function initializePresentation() {
     // Initialize auto-hide navigation
     initAutoHideNav();
     
-    // Load Pyodide
-    loadPyodideRuntime();
-    
     // Initialize interactive demos
     initBloomFilter();
     initHLL();
@@ -1199,7 +1121,6 @@ async function initializePresentation() {
 document.addEventListener('DOMContentLoaded', initializePresentation);
 
 // Make functions globally available
-window.runPythonCode = runPythonCode;
 window.addToBloom = addToBloom;
 window.checkBloom = checkBloom;
 window.resetBloom = resetBloom;

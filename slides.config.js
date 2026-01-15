@@ -171,7 +171,7 @@ const SLIDES_CONFIG = [
     {
         file: 'concluzii-comparatie.html',
         classes: ['conclusion-section'],
-        title: 'Tabel Comparativ Final'
+        title: 'Congluzii'
     },
     {
         file: 'concluzii-cand.html',
