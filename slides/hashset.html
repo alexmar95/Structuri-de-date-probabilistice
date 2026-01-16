@@ -50,14 +50,25 @@
                 </div>
                 <div class="hash-flow-arrow">→</div>
                 <div class="hash-flow-item">
-                    <span class="hash-mod">% size</span>
+                    <span class="hash-mod">% 10</span>
                 </div>
                 <div class="hash-flow-arrow">→</div>
                 <div class="hash-flow-item bucket">
-                    <span class="bucket-idx">[7]</span>
+                    <span class="bucket-idx">[9]</span>
                 </div>
             </div>
-            <div class="hashset-note">Element → hash → index în array → acces direct O(1)</div>
+            <div class="hashset-buckets">
+                <div class="bucket-row empty"><span class="bucket-label">[0]</span><span class="bucket-null">∅</span></div>
+                <div class="bucket-row empty"><span class="bucket-label">[1]</span><span class="bucket-null">∅</span></div>
+                <div class="bucket-row"><span class="bucket-label">[2]</span><span class="linked-list"><span class="list-node">"virus.exe"</span><span class="list-arrow">→</span><span class="list-null">∅</span></span></div>
+                <div class="bucket-row empty"><span class="bucket-label">[3]</span><span class="bucket-null">∅</span></div>
+                <div class="bucket-row"><span class="bucket-label">[4]</span><span class="linked-list"><span class="list-node">"malware.net"</span><span class="list-arrow">→</span><span class="list-node">"phish.io"</span><span class="list-arrow">→</span><span class="list-null">∅</span></span></div>
+                <div class="bucket-row empty"><span class="bucket-label">[...]</span><span class="bucket-null"></span></div>
+                <div class="bucket-row highlighted"><span class="bucket-label">[9]</span><span class="linked-list"><span class="list-node new">"bitdefender.com"</span><span class="list-arrow">→</span><span class="list-null">∅</span></span></div>
+            </div>
+            <div class="hashset-note">
+                <strong>Bucket-ul [9]</strong> conține o <em>listă simplu înlănțuită</em> cu elementele care au același index
+            </div>
         </div>
         <div class="recap-insight warning">
             <span class="insight-icon">⚠️</span>
@@ -65,3 +76,4 @@
         </div>
     </div>
 </div>
+

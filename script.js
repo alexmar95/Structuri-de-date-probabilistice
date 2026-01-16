@@ -834,7 +834,7 @@ function addRandomElements(count) {
 function addRandomElementsCustom() {
     const countInput = document.getElementById('hllElementCount');
     const count = countInput ? parseInt(countInput.value) || 10 : 10;
-    addRandomElements(Math.min(count, 10000));
+    addRandomElements(Math.min(count, 1000000));
 }
 
 function resetHLL() {
