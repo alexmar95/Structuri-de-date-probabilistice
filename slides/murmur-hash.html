@@ -1,0 +1,137 @@
+<div class="slide-content">
+    <div class="slide-header" style="margin-bottom: var(--space-md);">
+        <span class="slide-chapter">00 • Funcții Hash</span>
+        <h2>🌀 The Hash Function</h2>
+    </div>
+    <div class="slide-body" style="gap: 6px;">
+        <!-- Top: Definition - full width -->
+        <div class="definition-box" style="margin: 0; padding: 8px 12px;">
+            <p style="margin: 0; font-size: 0.9rem; text-align: center;">
+                <strong>MurmurHash</strong> — funcție hash non-criptografică, extrem de rapidă (Austin Appleby, 2008). 
+                Numele: <strong>MU</strong>ltiply + <strong>R</strong>otate.
+            </p>
+        </div>
+
+        <!-- Middle: Two columns - Algorithm (left) + Constants & Table (right) -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: stretch; width: 100%;">
+            <!-- Left: Algorithm steps -->
+            <div style="display: flex; flex-direction: column; gap: 4px;">
+                <div class="step-card compact" style="padding: 6px 10px; display: flex; align-items: flex-start; gap: 8px; flex: 1; max-width: none;">
+                    <div class="step-number" style="width: 22px; height: 22px; font-size: 0.7rem; flex-shrink: 0;">1</div>
+                    <div style="flex: 1;">
+                        <strong style="font-size: 0.8rem;">Împarte în blocuri de 4 bytes</strong>
+                        <code style="font-size: 0.7rem; display: block; margin-top: 2px;">"malwarewebsite.com" → [malw] [arew] [ebsi] ...</code>
+                    </div>
+                </div>
+                <div class="step-card compact" style="padding: 6px 10px; display: flex; align-items: flex-start; gap: 8px; flex: 1; max-width: none;">
+                    <div class="step-number" style="width: 22px; height: 22px; font-size: 0.7rem; flex-shrink: 0;">2</div>
+                    <div style="flex: 1;">
+                        <strong style="font-size: 0.8rem;">MUltiply + Rotate</strong>
+                        <code style="font-size: 0.7rem; display: block; margin-top: 2px;">k *= <span style="color: var(--accent-bloom);">c1</span>; k = ROTL(k,15); k *= <span style="color: var(--accent-bloom);">c2</span></code>
+                    </div>
+                </div>
+                <div class="step-card compact" style="padding: 6px 10px; display: flex; align-items: flex-start; gap: 8px; flex: 1; max-width: none;">
+                    <div class="step-number" style="width: 22px; height: 22px; font-size: 0.7rem; flex-shrink: 0;">3</div>
+                    <div style="flex: 1;">
+                        <strong style="font-size: 0.8rem;">XOR + Amestecă în hash</strong>
+                        <code style="font-size: 0.7rem; display: block; margin-top: 2px;">h ^= k; h = ROTL(h,13); h = h*5 + salt</code>
+                    </div>
+                </div>
+                <div class="step-card compact" style="padding: 6px 10px; display: flex; align-items: flex-start; gap: 8px; flex: 1; max-width: none; border: 1px solid var(--accent-hll);">
+                    <div class="step-number" style="width: 22px; height: 22px; font-size: 0.7rem; flex-shrink: 0; background: var(--accent-hll);">4</div>
+                    <div style="flex: 1;">
+                        <strong style="font-size: 0.8rem;">Avalanche</strong>
+                        <span style="font-size: 0.65rem; color: var(--text-muted);"> — 1 bit → ~50% biți diferiți</span>
+                        <code style="font-size: 0.7rem; display: block; margin-top: 2px;">h ^= h>>16; h *= <span style="color: var(--accent-hll);">c3</span>; h ^= h>>13; h *= <span style="color: var(--accent-hll);">c4</span></code>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Constants + Comparison Table -->
+            <div style="display: flex; flex-direction: column; gap: 4px;">
+                <!-- Constants box -->
+                <div style="padding: 6px 10px; background: var(--bg-tertiary); border-radius: var(--radius-sm); font-size: 0.75rem; font-family: var(--font-mono);">
+                    <div style="font-weight: 600; margin-bottom: 4px; color: var(--text-primary); font-family: var(--font-body); font-size: 0.8rem;">🔢 Constante "magice"</div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2px;">
+                        <div><span style="color: var(--accent-bloom);">c1 = 0xcc9e2d51</span></div>
+                        <div><span style="color: var(--accent-bloom);">c2 = 0x1b873593</span></div>
+                        <div><span style="color: var(--accent-hll);">c3 = 0x85ebca6b</span></div>
+                        <div><span style="color: var(--accent-hll);">c4 = 0xc2b2ae35</span></div>
+                    </div>
+                    <div style="font-size: 0.65rem; color: var(--text-muted); margin-top: 4px; font-family: var(--font-body);">
+                        Alese pentru difuzie maximă a biților
+                    </div>
+                </div>
+                
+                <!-- Comparison Table -->
+                <table class="comparison-table" style="font-size: 0.75rem; flex: 1;">
+                    <thead>
+                        <tr>
+                            <th>Criteriu</th>
+                            <th>MurmurHash3</th>
+                            <th>SHA-256</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Viteză</td>
+                            <td class="good">~5 GB/s ⚡</td>
+                            <td class="bad">~0.3 GB/s</td>
+                        </tr>
+                        <tr>
+                            <td>Output</td>
+                            <td>32 / 128 biți</td>
+                            <td>256 biți</td>
+                        </tr>
+                        <tr>
+                            <td>Criptografic</td>
+                            <td class="neutral">Nu</td>
+                            <td class="good">Da</td>
+                        </tr>
+                        <tr>
+                            <td>Coliziuni</td>
+                            <td class="neutral">Rare</td>
+                            <td class="good">Extrem rare</td>
+                        </tr>
+                        <tr>
+                            <td>Scop</td>
+                            <td>Hash tables, Bloom</td>
+                            <td>Semnături, parole</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <!-- Used by -->
+                <div style="padding: 5px 10px; background: var(--bg-tertiary); border-radius: var(--radius-sm); font-size: 0.7rem; text-align: center;">
+                    <strong>Folosit de:</strong> Redis, Cassandra, Spark, nginx, Google Guava
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom: Interactive Demo - full width -->
+        <div class="interactive-demo" style="padding: 8px 12px; background: var(--bg-secondary); border-radius: var(--radius-md); border: 1px solid var(--border-color); margin-top: 0;">
+            <div style="display: flex; align-items: center; gap: var(--space-md); flex-wrap: wrap;">
+                <div style="display: flex; align-items: center; gap: 8px; flex: 1; min-width: 200px;">
+                    <span style="font-size: 0.8rem; font-weight: 500;">🎮 Testează:</span>
+                    <input type="text" id="murmurInput" placeholder="Introdu un text..." class="demo-input" 
+                           style="flex: 1; padding: 6px 10px; font-size: 0.85rem;" 
+                           oninput="computeMurmurHash()">
+                </div>
+                <div style="display: flex; gap: var(--space-lg); font-family: var(--font-mono); font-size: 0.8rem;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 0.6rem; color: var(--text-muted); margin-bottom: 1px;">HEX</div>
+                        <div id="murmurHex" style="color: var(--accent-bloom); font-weight: 600;">0x00000000</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 0.6rem; color: var(--text-muted); margin-bottom: 1px;">DECIMAL</div>
+                        <div id="murmurDec" style="color: var(--accent-hll); font-weight: 600;">0</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 0.6rem; color: var(--text-muted); margin-bottom: 1px;">% 1000</div>
+                        <div id="murmurMod" style="color: var(--accent-success); font-weight: 600;">0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

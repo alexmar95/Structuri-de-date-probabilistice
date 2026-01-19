@@ -25,6 +25,11 @@ const SLIDES_CONFIG = [
         title: 'Ideea: Folosim un HashSet!'
     },
     {
+        file: 'murmur-hash.html',
+        classes: ['transition-section'],
+        title: 'MurmurHash — Hash-ul din spatele Hash Tables'
+    },
+    {
         file: 'memorie.html',
         classes: ['transition-section'],
         title: 'Cât RAM consumă un HashSet?'

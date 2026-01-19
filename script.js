@@ -1084,6 +1084,83 @@ function updateBloomMathCalc() {
 }
 
 // ============================================
+// MurmurHash3 Interactive Demo
+// ============================================
+
+function murmur3_32(key, seed = 0) {
+    // MurmurHash3 32-bit implementation
+    const c1 = 0xcc9e2d51;
+    const c2 = 0x1b873593;
+    
+    let h1 = seed >>> 0;
+    const len = key.length;
+    
+    // Helper functions
+    const rotl32 = (x, r) => ((x << r) | (x >>> (32 - r))) >>> 0;
+    const fmix32 = (h) => {
+        h ^= h >>> 16;
+        h = Math.imul(h, 0x85ebca6b) >>> 0;
+        h ^= h >>> 13;
+        h = Math.imul(h, 0xc2b2ae35) >>> 0;
+        h ^= h >>> 16;
+        return h >>> 0;
+    };
+    
+    // Body - process 4-byte blocks
+    const blocks = Math.floor(len / 4);
+    for (let i = 0; i < blocks; i++) {
+        let k1 = (key.charCodeAt(i * 4) & 0xff) |
+                 ((key.charCodeAt(i * 4 + 1) & 0xff) << 8) |
+                 ((key.charCodeAt(i * 4 + 2) & 0xff) << 16) |
+                 ((key.charCodeAt(i * 4 + 3) & 0xff) << 24);
+        k1 = k1 >>> 0;
+        
+        k1 = Math.imul(k1, c1) >>> 0;
+        k1 = rotl32(k1, 15);
+        k1 = Math.imul(k1, c2) >>> 0;
+        
+        h1 ^= k1;
+        h1 = rotl32(h1, 13);
+        h1 = (Math.imul(h1, 5) + 0xe6546b64) >>> 0;
+    }
+    
+    // Tail - process remaining bytes
+    let k1 = 0;
+    const tailStart = blocks * 4;
+    switch (len & 3) {
+        case 3: k1 ^= (key.charCodeAt(tailStart + 2) & 0xff) << 16;
+        case 2: k1 ^= (key.charCodeAt(tailStart + 1) & 0xff) << 8;
+        case 1: k1 ^= (key.charCodeAt(tailStart) & 0xff);
+                k1 = Math.imul(k1, c1) >>> 0;
+                k1 = rotl32(k1, 15);
+                k1 = Math.imul(k1, c2) >>> 0;
+                h1 ^= k1;
+    }
+    
+    // Finalization (avalanche)
+    h1 ^= len;
+    h1 = fmix32(h1);
+    
+    return h1 >>> 0;
+}
+
+function computeMurmurHash() {
+    const input = document.getElementById('murmurInput');
+    const hexOutput = document.getElementById('murmurHex');
+    const decOutput = document.getElementById('murmurDec');
+    const modOutput = document.getElementById('murmurMod');
+    
+    if (!input || !hexOutput || !decOutput || !modOutput) return;
+    
+    const text = input.value;
+    const hash = murmur3_32(text, 0);
+    
+    hexOutput.textContent = '0x' + hash.toString(16).padStart(8, '0').toUpperCase();
+    decOutput.textContent = hash.toLocaleString();
+    modOutput.textContent = hash % 1000;
+}
+
+// ============================================
 // Initialize
 // ============================================
 
@@ -1135,4 +1212,5 @@ window.nextSlide = nextSlide;
 window.prevSlide = prevSlide;
 window.goToSlide = goToSlide;
 window.updateBloomMathCalc = updateBloomMathCalc;
+window.computeMurmurHash = computeMurmurHash;
 
