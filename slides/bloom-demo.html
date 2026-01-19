@@ -5,6 +5,33 @@
     </div>
     <div class="slide-body">
         <div class="interactive-demo" style="padding: var(--space-md);">
+            <!-- Configuration Controls -->
+            <div class="bloom-config" style="display: flex; gap: var(--space-md); align-items: center; margin-bottom: var(--space-sm); padding: 8px 12px; background: var(--bg-tertiary); border-radius: var(--radius-sm); flex-wrap: wrap;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <label for="bloomBitsConfig" style="font-size: 0.85rem; color: var(--text-secondary);">Biți (m):</label>
+                    <select id="bloomBitsConfig" onchange="updateBloomConfig()" style="padding: 4px 8px; border-radius: 4px; border: 1px solid var(--border-color); background: var(--bg-secondary); color: var(--text-primary); font-family: var(--font-mono); font-size: 0.85rem;">
+                        <option value="16">16</option>
+                        <option value="32" selected>32</option>
+                        <option value="64">64</option>
+                        <option value="128">128</option>
+                    </select>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <label for="bloomHashesConfig" style="font-size: 0.85rem; color: var(--text-secondary);">Funcții hash (k):</label>
+                    <select id="bloomHashesConfig" onchange="updateBloomConfig()" style="padding: 4px 8px; border-radius: 4px; border: 1px solid var(--border-color); background: var(--bg-secondary); color: var(--text-primary); font-family: var(--font-mono); font-size: 0.85rem;">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3" selected>3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="7">7</option>
+                    </select>
+                </div>
+                <div style="font-size: 0.75rem; color: var(--text-muted); margin-left: auto;">
+                    FP teoretic: <strong id="bloomFPTheory">~2.7%</strong>
+                </div>
+            </div>
+            
             <div class="demo-controls" style="margin-bottom: var(--space-md);">
                 <input type="text" id="bloomInput" placeholder="Introdu un cuvânt..." class="demo-input">
                 <button onclick="addToBloom()" class="demo-btn primary">Adaugă</button>
@@ -15,8 +42,8 @@
             <!-- Bit Array Visualization -->
             <div class="bloom-bit-display">
                 <div class="bit-array-header">
-                    <span>Array de <strong>m = 32</strong> biți</span>
-                    <span class="bits-set-count">Biți setați: <strong id="bitsSetCount">0</strong> / 32</span>
+                    <span>Array de <strong id="bloomBitsLabel">m = 32</strong> biți</span>
+                    <span class="bits-set-count">Biți setați: <strong id="bitsSetCount">0</strong> / <span id="bloomBitsTotal">32</span></span>
                 </div>
                 <div class="bit-array-visual" id="bloomBitArray"></div>
                 <div class="bit-array-indices" id="bloomBitIndices"></div>

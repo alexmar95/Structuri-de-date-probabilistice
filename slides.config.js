@@ -176,11 +176,6 @@ const SLIDES_CONFIG = [
     {
         file: 'concluzii-comparatie.html',
         classes: ['conclusion-section'],
-        title: 'Congluzii'
-    },
-    {
-        file: 'final.html',
-        classes: ['final-slide'],
-        title: 'Întrebări?'
+        title: 'Concluzii'
     }
 ];

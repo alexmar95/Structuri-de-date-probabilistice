@@ -491,7 +491,21 @@ function resetHideNavTimer() {
 function initBloomFilter() {
     bloomFilter.bitArray = new Array(bloomFilter.size).fill(0);
     bloomFilter.addedElements = [];
+    
+    // Update labels to match current config
+    const bitsLabel = document.getElementById('bloomBitsLabel');
+    const bitsTotal = document.getElementById('bloomBitsTotal');
+    if (bitsLabel) bitsLabel.textContent = `m = ${bloomFilter.size}`;
+    if (bitsTotal) bitsTotal.textContent = bloomFilter.size;
+    
     renderBloomFilter();
+    
+    // Initial FP calculation (for empty filter, estimate with n=10)
+    const k = bloomFilter.numHashes;
+    const m = bloomFilter.size;
+    const fp = Math.pow(1 - Math.exp(-k * 10 / m), k) * 100;
+    const fpLabel = document.getElementById('bloomFPTheory');
+    if (fpLabel) fpLabel.textContent = `~${fp.toFixed(1)}% (n=10)`;
 }
 
 function simpleHash(str, seed) {
@@ -545,6 +559,7 @@ function addToBloom() {
     }
     showBloomOutput(msg, 'success');
     updateAddedList();
+    updateBloomFPDisplay();
     
     input.value = '';
     input.focus();
@@ -586,6 +601,41 @@ function resetBloom() {
     // Clear hash explanation
     const hashContainer = document.getElementById('hashIndicators');
     if (hashContainer) hashContainer.innerHTML = '';
+}
+
+function updateBloomConfig() {
+    const bitsSelect = document.getElementById('bloomBitsConfig');
+    const hashesSelect = document.getElementById('bloomHashesConfig');
+    
+    if (bitsSelect) bloomFilter.size = parseInt(bitsSelect.value);
+    if (hashesSelect) bloomFilter.numHashes = parseInt(hashesSelect.value);
+    
+    // Update labels
+    const bitsLabel = document.getElementById('bloomBitsLabel');
+    const bitsTotal = document.getElementById('bloomBitsTotal');
+    if (bitsLabel) bitsLabel.textContent = `m = ${bloomFilter.size}`;
+    if (bitsTotal) bitsTotal.textContent = bloomFilter.size;
+    
+    // Calculate theoretical FP rate: (1 - e^(-kn/m))^k
+    // For empty filter with n=10 expected elements
+    const n = Math.max(bloomFilter.addedElements.length, 10);
+    const k = bloomFilter.numHashes;
+    const m = bloomFilter.size;
+    const fp = Math.pow(1 - Math.exp(-k * n / m), k) * 100;
+    const fpLabel = document.getElementById('bloomFPTheory');
+    if (fpLabel) fpLabel.textContent = `~${fp.toFixed(1)}% (n=${n})`;
+    
+    // Reset and reinitialize
+    resetBloom();
+}
+
+function updateBloomFPDisplay() {
+    const n = Math.max(bloomFilter.addedElements.length, 1);
+    const k = bloomFilter.numHashes;
+    const m = bloomFilter.size;
+    const fp = Math.pow(1 - Math.exp(-k * n / m), k) * 100;
+    const fpLabel = document.getElementById('bloomFPTheory');
+    if (fpLabel) fpLabel.textContent = `~${fp.toFixed(1)}% (n=${n})`;
 }
 
 function renderBloomFilter(highlightPositions = [], checkResult = null) {
@@ -650,14 +700,34 @@ function renderHashExplanation(item, hashes, isCheck = false, checkResult = null
         return;
     }
     
+    // For insert: detect duplicate hash values (collisions)
+    const hashCounts = {};
+    hashes.forEach(pos => {
+        hashCounts[pos] = (hashCounts[pos] || 0) + 1;
+    });
+    const duplicatePositions = new Set(
+        Object.entries(hashCounts)
+            .filter(([_, count]) => count > 1)
+            .map(([pos, _]) => parseInt(pos))
+    );
+    
     let html = `<div class="hash-explanation">`;
     html += `<div class="hash-title">${isCheck ? 'Verificare' : 'Inserare'}: "<strong>${item}</strong>"</div>`;
     html += `<div class="hash-steps">`;
     
     hashes.forEach((pos, i) => {
         const bitValue = bloomFilter.bitArray[pos];
-        const statusClass = isCheck ? (bitValue === 1 ? 'hit' : 'miss') : 'add';
-        const statusIcon = isCheck ? (bitValue === 1 ? '✓' : '✗') : '→';
+        let statusClass, statusIcon;
+        
+        if (isCheck) {
+            statusClass = bitValue === 1 ? 'hit' : 'miss';
+            statusIcon = bitValue === 1 ? '✓' : '✗';
+        } else {
+            // Insert mode: green for unique, blue for collision
+            statusClass = duplicatePositions.has(pos) ? 'collision' : 'add';
+            statusIcon = '→';
+        }
+        
         html += `
             <div class="hash-step ${statusClass}">
                 <span class="hash-func">h<sub>${i+1}</sub>("${item}")</span>
@@ -669,6 +739,12 @@ function renderHashExplanation(item, hashes, isCheck = false, checkResult = null
     });
     
     html += `</div>`;
+    
+    // Show collision warning if duplicates exist (insert mode only)
+    if (!isCheck && duplicatePositions.size > 0) {
+        const uniqueBitsSet = new Set(hashes).size;
+        html += `<div class="hash-collision-note">⚠ Coliziune internă: ${hashes.length} hash-uri → doar ${uniqueBitsSet} biți unici setați</div>`;
+    }
     
     // Conclusion
     if (isCheck) {
@@ -1303,6 +1379,7 @@ document.addEventListener('DOMContentLoaded', initializePresentation);
 window.addToBloom = addToBloom;
 window.checkBloom = checkBloom;
 window.resetBloom = resetBloom;
+window.updateBloomConfig = updateBloomConfig;
 window.addRandomElements = addRandomElements;
 window.addRandomElementsCustom = addRandomElementsCustom;
 window.updateHLLConfig = updateHLLConfig;

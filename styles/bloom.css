@@ -951,7 +951,33 @@
 }
 
 .hash-step.add {
-    border-left-color: var(--accent-primary);
+    border-left-color: var(--accent-success);
+    background: rgba(16, 185, 129, 0.1);
+}
+
+.hash-step.add .hash-pos {
+    color: var(--accent-success);
+    font-weight: 600;
+}
+
+.hash-step.collision {
+    border-left-color: #3b82f6;
+    background: rgba(59, 130, 246, 0.1);
+}
+
+.hash-step.collision .hash-pos {
+    color: #3b82f6;
+    font-weight: 600;
+}
+
+.hash-collision-note {
+    font-size: 0.8rem;
+    color: #3b82f6;
+    padding: var(--space-xs) var(--space-sm);
+    margin-top: var(--space-xs);
+    background: rgba(59, 130, 246, 0.1);
+    border-radius: var(--radius-sm);
+    text-align: center;
 }
 
 .hash-step.hit {
