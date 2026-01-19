@@ -10,6 +10,8 @@ let slides = [];
 let currentTheme = 'dark';
 let hideNavTimeout = null;
 let slidesLoaded = false;
+let projectorMode = false;
+let fontScale = 100;
 
 let bloomFilter = {
     size: 32,
@@ -290,6 +292,21 @@ function handleKeyboard(e) {
             e.preventDefault();
             goToSlide(totalSlides - 1);
             break;
+        case 'p':
+        case 'P':
+            e.preventDefault();
+            toggleProjectorMode();
+            break;
+        case '+':
+        case '=':
+            e.preventDefault();
+            increaseFontSize();
+            break;
+        case '-':
+        case '_':
+            e.preventDefault();
+            decreaseFontSize();
+            break;
     }
 }
 
@@ -319,6 +336,89 @@ function setTheme(theme) {
 function toggleTheme() {
     const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
     setTheme(newTheme);
+}
+
+// ============================================
+// Projector Mode Toggle
+// ============================================
+
+function toggleProjectorMode() {
+    projectorMode = !projectorMode;
+    
+    const body = document.body;
+    const btn = document.getElementById('projectorToggle');
+    
+    if (projectorMode) {
+        body.classList.add('projector-mode');
+        if (btn) btn.classList.add('active');
+        localStorage.setItem('projector-mode', 'true');
+        console.log('📽️ Projector mode: ON');
+    } else {
+        body.classList.remove('projector-mode');
+        if (btn) btn.classList.remove('active');
+        localStorage.setItem('projector-mode', 'false');
+        console.log('📽️ Projector mode: OFF');
+    }
+}
+
+function initProjectorMode() {
+    // Check saved preference
+    const saved = localStorage.getItem('projector-mode');
+    if (saved === 'true') {
+        projectorMode = true;
+        document.body.classList.add('projector-mode');
+        const btn = document.getElementById('projectorToggle');
+        if (btn) btn.classList.add('active');
+    }
+}
+
+// ============================================
+// Font Size Adjustment
+// ============================================
+
+function adjustFontSize(value) {
+    fontScale = parseInt(value);
+    
+    const slider = document.getElementById('fontSizeSlider');
+    const display = document.getElementById('fontSizeValue');
+    
+    if (slider) slider.value = fontScale;
+    if (display) display.textContent = fontScale + '%';
+    
+    // Apply scaling via CSS custom property on html element
+    // This affects all rem units throughout the presentation
+    document.documentElement.style.setProperty('--font-scale', fontScale / 100);
+    
+    // Add/remove class for counter-scaling titles
+    if (fontScale !== 100) {
+        document.body.classList.add('font-scaled');
+    } else {
+        document.body.classList.remove('font-scaled');
+    }
+    
+    // Save preference
+    localStorage.setItem('font-scale', fontScale);
+    
+    console.log(`📏 Font scale: ${fontScale}%`);
+}
+
+function increaseFontSize() {
+    const newScale = Math.min(fontScale + 5, 150);
+    adjustFontSize(newScale);
+}
+
+function decreaseFontSize() {
+    const newScale = Math.max(fontScale - 5, 80);
+    adjustFontSize(newScale);
+}
+
+function initFontSize() {
+    // Check saved preference
+    const saved = localStorage.getItem('font-scale');
+    if (saved) {
+        fontScale = parseInt(saved);
+        adjustFontSize(fontScale);
+    }
 }
 
 // ============================================
@@ -1165,8 +1265,10 @@ function computeMurmurHash() {
 // ============================================
 
 async function initializePresentation() {
-    // Initialize theme first
+    // Initialize theme, projector mode and font size first
     initTheme();
+    initProjectorMode();
+    initFontSize();
     
     // Load slides from HTML fragments
     const loaded = await loadSlides();
@@ -1213,4 +1315,6 @@ window.prevSlide = prevSlide;
 window.goToSlide = goToSlide;
 window.updateBloomMathCalc = updateBloomMathCalc;
 window.computeMurmurHash = computeMurmurHash;
+window.toggleProjectorMode = toggleProjectorMode;
+window.adjustFontSize = adjustFontSize;
 

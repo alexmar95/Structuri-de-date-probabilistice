@@ -48,6 +48,9 @@
 
     <!-- Top Right Controls -->
     <div class="top-controls">
+        <button class="projector-toggle" id="projectorToggle" onclick="toggleProjectorMode()" title="Mod Proiector (P)">
+            <span class="projector-icon">📽️</span>
+        </button>
         <button class="theme-toggle" id="themeToggle" title="Schimbă tema">
             <span class="theme-icon light">☀️</span>
             <span class="theme-icon dark">🌙</span>
@@ -65,6 +68,14 @@
 
     <!-- Slide Dots -->
     <div class="slide-dots" id="slideDots"></div>
+
+    <!-- Font Size Slider (bottom right, subtle) -->
+    <div class="font-size-control" id="fontSizeControl" title="Ajustează mărimea textului (+ / -)">
+        <span class="font-size-icon">Aa</span>
+        <input type="range" id="fontSizeSlider" min="80" max="150" value="100" 
+               oninput="adjustFontSize(this.value)">
+        <span class="font-size-value" id="fontSizeValue">100%</span>
+    </div>
 
     <!-- Slides Configuration -->
     <script src="slides.config.js"></script>

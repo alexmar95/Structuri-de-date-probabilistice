@@ -230,3 +230,233 @@
     }
 }
 
+/* ============================================
+   PROJECTOR MODE
+   For low-resolution projectors (1280x720, 800x600)
+   Toggle with 📽️ button or press 'P'
+   ============================================ */
+
+.projector-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 1.2rem;
+}
+
+.projector-toggle:hover {
+    background: var(--bg-tertiary);
+    border-color: var(--accent-primary);
+}
+
+.projector-toggle.active {
+    background: var(--accent-primary);
+    border-color: var(--accent-primary);
+}
+
+/* Projector Mode Styles */
+.projector-mode {
+    --projector-scale: 1.15;
+}
+
+.projector-mode .slide-header h2 {
+    font-size: 3.2rem;
+}
+
+.projector-mode .slide-chapter {
+    font-size: 1rem;
+}
+
+.projector-mode .slide-body {
+    font-size: 1.1rem;
+}
+
+.projector-mode .definition-box p,
+.projector-mode .lead {
+    font-size: 1.15rem;
+}
+
+.projector-mode .step-card strong,
+.projector-mode .feature-card h4,
+.projector-mode .app-card h4,
+.projector-mode .requirement-card h4 {
+    font-size: 1.05rem;
+}
+
+.projector-mode code {
+    font-size: 0.95rem;
+}
+
+.projector-mode .comparison-table {
+    font-size: 0.95rem;
+}
+
+.projector-mode .comparison-table th,
+.projector-mode .comparison-table td {
+    padding: 10px 14px;
+}
+
+.projector-mode .demo-input {
+    font-size: 1.1rem;
+    padding: 10px 14px;
+}
+
+.projector-mode .bit-array .bit {
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+}
+
+.projector-mode .step-number {
+    width: 28px;
+    height: 28px;
+    font-size: 0.9rem;
+}
+
+.projector-mode .register {
+    min-width: 55px;
+    padding: 8px;
+}
+
+.projector-mode .register-value {
+    font-size: 1.1rem;
+}
+
+/* Indicator that projector mode is active */
+.projector-mode .projector-toggle::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 6px;
+    height: 6px;
+    background: var(--accent-success);
+    border-radius: 50%;
+}
+
+/* ============================================
+   FONT SIZE SLIDER
+   Subtle control in bottom-right corner
+   Appears on hover, keyboard: + / -
+   ============================================ */
+
+.font-size-control {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    opacity: 0.15;
+    transition: opacity 0.3s ease, transform 0.2s ease;
+    z-index: 1000;
+    transform: translateY(0);
+}
+
+.font-size-control:hover {
+    opacity: 1;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.font-size-icon {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    user-select: none;
+}
+
+.font-size-control:hover .font-size-icon {
+    color: var(--accent-primary);
+}
+
+.font-size-value {
+    font-size: 0.75rem;
+    font-family: var(--font-mono);
+    color: var(--text-muted);
+    min-width: 40px;
+    text-align: right;
+}
+
+.font-size-control:hover .font-size-value {
+    color: var(--text-primary);
+}
+
+/* Slider styling */
+#fontSizeSlider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 80px;
+    height: 4px;
+    background: var(--bg-tertiary);
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+}
+
+#fontSizeSlider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    background: var(--accent-primary);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.15s ease;
+}
+
+#fontSizeSlider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+}
+
+#fontSizeSlider::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    background: var(--accent-primary);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+/* Font scaling - scales all rem units by changing root font size */
+html {
+    font-size: calc(16px * var(--font-scale, 1));
+}
+
+/* Keep titles at original size (counter-scale them) */
+.font-scaled .slide-header h2 {
+    font-size: calc(2.75rem / var(--font-scale, 1));
+}
+
+.font-scaled .cover-title .title-line {
+    font-size: calc(4rem / var(--font-scale, 1));
+}
+
+.font-scaled .cover-title .title-line.accent {
+    font-size: calc(4.5rem / var(--font-scale, 1));
+}
+
+/* Keep navigation and controls at original size */
+.font-scaled .slide-nav,
+.font-scaled .top-controls,
+.font-scaled .slide-dots,
+.font-scaled .font-size-control,
+.font-scaled .progress-bar {
+    font-size: calc(1rem / var(--font-scale, 1));
+}
+
+.font-scaled .slide-nav-btn svg {
+    width: calc(24px / var(--font-scale, 1));
+    height: calc(24px / var(--font-scale, 1));
+}
